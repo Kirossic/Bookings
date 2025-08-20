@@ -1,0 +1,217 @@
+/* Общие переменные для масштабирования */
+:root {
+    --main-bg: #f5f6fa;
+    --accent: #4f8cff;
+    --accent-dark: #3561a7;
+    --header-bg: #fff;
+    --footer-bg: #222;
+    --text-main: #222;
+    --text-light: #fff;
+    --border-radius: 14px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.07);
+    --transition: 0.2s;
+    --container-width: 1200px;
+}
+
+/* Сброс стилей */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--main-bg);
+    color: var(--text-main);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+header {
+    background: var(--header-bg);
+    box-shadow: var(--shadow);
+    padding: 18px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+header .logo {
+    height: 48px;
+    margin-right: 18px;
+    vertical-align: middle;
+}
+
+header h1 {
+    font-size: 2rem;
+    color: var(--accent);
+    margin-right: 32px;
+    letter-spacing: 2px;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+nav .profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 16px;
+    border: 2px solid var(--accent);
+}
+
+nav ul#options {
+    display: flex;
+    gap: 18px;
+    list-style: none;
+}
+
+nav ul#options li {
+    font-size: 1rem;
+    font-weight: 500;
+    transition: color var(--transition);
+}
+
+nav ul#options li a {
+    color: var(--accent-dark);
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    transition: background var(--transition), color var(--transition);
+}
+
+nav ul#options li a:hover {
+    background: var(--accent);
+    color: var(--text-light);
+}
+
+nav ul#options #cloes {
+    color: #b00;
+    cursor: pointer;
+    padding: 6px 14px;
+    border-radius: 6px;
+    transition: background var(--transition), color var(--transition);
+}
+
+nav ul#options #cloes:hover {
+    background: #fdd;
+    color: #b00;
+}
+
+/* Main */
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 16px;
+    min-height: 60vh;
+}
+
+/* Пример секции для карточек отелей */
+.hotels-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 32px;
+    width: 100%;
+    max-width: var(--container-width);
+    margin: 0 auto;
+}
+
+.hotel-card {
+    background: #fff;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.hotel-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 8px 32px rgba(79,140,255,0.12);
+}
+
+.hotel-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.hotel-card-content {
+    padding: 18px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.hotel-card-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--accent-dark);
+}
+
+.hotel-card-desc {
+    font-size: 1rem;
+    color: #555;
+    flex: 1;
+}
+
+.hotel-card-price {
+    font-size: 1.1rem;
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.hotel-card-btn {
+    margin-top: 10px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--transition);
+}
+
+.hotel-card-btn:hover {
+    background: var(--accent-dark);
+}
+
+/* Footer */
+footer {
+    background: var(--footer-bg);
+    color: var(--text-light);
+    text-align: center;
+    padding: 18px 0;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    margin-top: auto;
+}
+
+/* Адаптивность */
+@media (max-width: 700px) {
+    header, main {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .hotels-list {
+        grid-template-columns: 1fr;
+    }
+    header h1 {
+        margin: 12px 0;
+        text-align: center;
+    }
+}
