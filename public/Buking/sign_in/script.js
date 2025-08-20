@@ -23,9 +23,9 @@ elemrnts.button.addEventListener('click', async () => {
     const user = usersLocal.find(u => u.email === elemrnts.email.value && u.password_hash === elemrnts.password.value);
     if (user) {
         alert(`Добро пожаловать, ${user.name}!`);
+        window.location.href = "../home/index.html";
     } else {
         alert('Неверный email или пароль.');
     }
-    window.location.href = "../index.html";
 });
 console.log(usersLocal);
