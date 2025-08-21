@@ -14,16 +14,7 @@ let elemrnts = {
     email: document.getElementById('email'),
     password: document.getElementById('password'),
     button: document.getElementById('button')
-}
-/*
-con.query('INSERT INTO users  (name, email, password_hash, role_id) VALUES ($1, $2)', [1, 'Ivan'])
-.then(res => {
-    console.log('Пользователь добавлен');
-})
-.catch(err => {
-    console.error('Ошибка при добавлении пользователя', err);
-});
-*/
+};
 elemrnts.button.addEventListener('click', async () => {
     const name = elemrnts.name.value;
     const email = elemrnts.email.value;
@@ -60,7 +51,7 @@ elemrnts.button.addEventListener('click', async () => {
         console.error('Ошибка сети:', error);
         alert('Ошибка сети');
     }
-    window.location.href = "../index.html";
+    window.location.href = "../home/index.html";
 });
 
 console.log(usersLocal);
