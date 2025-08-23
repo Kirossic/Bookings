@@ -17,3 +17,12 @@ con.query('SELECT * FROM users')
   .catch(err => {
     console.error('Ошибка при получении пользователей', err);
 });
+
+// con.query('INSERT INTO resources (name, type, description, price_per_hour, status) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+//     ['Laungi Номер', 'Отель', 'Роскошный номер с видом на море', 100.00, 'Свободен'])
+//   .then(result => {
+//     console.log('Добавленный ресурс:', result.rows[0]);
+//   })
+//   .catch(err => {
+//     console.error('Ошибка при добавлении ресурса', err);
+// });

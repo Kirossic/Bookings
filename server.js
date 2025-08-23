@@ -31,6 +31,19 @@ app.get('/api/users', async (req, res) => {
     }
 });
 
+app.get('/api/resources', async (req, res) => {
+    if (!con._connected) {
+        return res.status(500).json({ error: 'Database connection not established' });
+    }
+    try {
+        const result = await con.query('SELECT * FROM resources');
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error executing query', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 app.post('/api/users', async (req, res) => {
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
