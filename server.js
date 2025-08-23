@@ -45,7 +45,7 @@ app.post('/api/users', async (req, res) => {
         // Вставка пользователя
         const result = await con.query(
             'INSERT INTO users (name, email, password_hash, role_id, created_at) VALUES ($1, $2, $3, $4, NOW()) RETURNING *',
-            [name, email, password, 1]
+            [name, email, password, 3]
         );
         res.status(201).json(result.rows[0]);
     } catch (error) {
