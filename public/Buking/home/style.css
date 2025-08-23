@@ -68,7 +68,7 @@ nav .profile-pic {
 }
 
 nav ul#options {
-    display: flex;
+    display: none;
     gap: 18px;
     list-style: none;
 }
@@ -92,7 +92,7 @@ nav ul#options li a:hover {
     color: var(--text-light);
 }
 
-nav ul#options #cloes {
+nav ul#options #close {
     color: #b00;
     cursor: pointer;
     padding: 6px 14px;
@@ -100,7 +100,7 @@ nav ul#options #cloes {
     transition: background var(--transition), color var(--transition);
 }
 
-nav ul#options #cloes:hover {
+nav ul#options #close:hover {
     background: #fdd;
     color: #b00;
 }
