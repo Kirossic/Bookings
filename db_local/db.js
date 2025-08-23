@@ -12,4 +12,5 @@ con.connect().then(() => {
 }).catch(err => {
     console.error('Connection error', err.stack);
 });
+
 module.exports = con;
