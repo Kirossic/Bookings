@@ -11,6 +11,12 @@ async function loadResources() {
     resources.forEach(r => {
         const div = document.createElement('div');
         div.className = 'hotel-card';
+        if (r.status !== 'Свободен') {
+            div.style.opacity = '0.6';
+            div.style.pointerEvents = 'none';
+        }
+        // div.style.backgroundImage = `url('./img/hotel${r.id}.jpg')`;
+        div.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
         div.innerHTML = `
             <img src="./img/logo_Blak.png" alt="${r.name}">
             <div class="hotel-card-content">
