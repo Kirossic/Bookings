@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 app.use(express.json());
 const con = require('./db_local/db.js');
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET || '789456123';
 
 app.get('/', (req, res) => {
     res.send('Привет, Express!');
