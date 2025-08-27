@@ -23,12 +23,14 @@ async function loadResources() {
                 <div class="hotel-card-title">${r.name}</div>
                 <div class="hotel-card-desc">${r.description}</div>
                 <div class="hotel-card-price">от ${r.price_per_hour} MDL/час</div>
-                <button class="hotel-card-btn">Забронировать</button>
+                <button class="hotel-card-btn" id="book-${r.id}">Подробнее</button>
             </div>
         `;
         hotelList.appendChild(div);
     });
+    log();
 }
+loadResources();
 const elements = {
     main: document.getElementsByTagName("main"),
     profile_pic: document.getElementsByClassName("profile-pic"),
@@ -44,4 +46,36 @@ elements.close.addEventListener('click', () => {
     elements.profile_pic[0].style.display = "inline";
 })
 console.log(elements.profile_pic);
-loadResources();
+
+function log() {
+    const bookButtons = document.querySelectorAll('.hotel-card-btn');
+    bookButtons.forEach(button => {
+        button.addEventListener('click', async () => {
+            
+            const resource = await fetch('/api/resources');
+            if (!resource.ok) {
+                console.error('Ошибка при загрузке ресурсов:', resource.statusText);
+                return;
+            }
+            const resources = await resource.json();
+            
+            const resourceId = button.id.split('-')[1];
+            try {
+                const res = await fetch(`/api/resources/${resourceId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status: 'Свободен' })
+                });
+                console.log('Response status:', res.status + '   ' + res.ok);
+            } catch (error) {
+                console.error('Ошибка сети:', error);
+                alert('Ошибка сети');
+            }
+            
+            console.log(`Booking hotel with ID: ${resourceId}`);
+            window.location.href = `./booking.html?hotelId=${button.id.split('-')[1]}`;
+        });
+    });
+}

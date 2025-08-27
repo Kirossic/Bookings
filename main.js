@@ -26,3 +26,12 @@ con.query('SELECT * FROM users')
 //   .catch(err => {
 //     console.error('Ошибка при добавлении ресурса', err);
 // });
+/*
+con.query('UPDATE resources SET status = $1 WHERE id = $2 RETURNING *', ['Свободен', 3])
+  .then(result => {
+    console.log('Обновленный ресурс:', result.rows[0]);
+  })
+  .catch(err => {
+    console.error('Ошибка при обновлении ресурса', err);
+  });
+*/
