@@ -46,6 +46,19 @@ app.get('/api/resources', async (req, res) => {
     }
 });
 
+app.get('/api/bookings', async (req, res) => {
+    if (!con._connected) {
+        return res.status(500).json({ error: 'Database connection not established' });
+    }
+    try {
+        const result = await con.query('SELECT * FROM bookings');
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error executing query', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 app.post('/api/users', async (req, res) => {
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
@@ -65,6 +78,40 @@ app.post('/api/users', async (req, res) => {
         res.status(201).json(result.rows[0]);
     } catch (error) {
         console.error('Ошибка при добавлении пользователя', error);
+        res.status(500).json({ error: 'Ошибка сервера' });
+    }
+});
+
+app.post('/api/bookings', async (req, res) => {
+    const { user_id, resource_id, start_time, end_time, status } = req.body;
+    if (!user_id || !resource_id || !start_time || !end_time || !status) {
+        return res.status(400).json({ error: 'Заполните все поля' });
+    }
+    try {
+        const result = await con.query(
+            'INSERT INTO bookings (user_id, resource_id, start_time, end_time, status, created_at) VALUES ($1, $2, $3, $4, $5, NOW()) RETURNING *',
+            [user_id, resource_id, start_time, end_time, status]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (error) {
+        console.error('Ошибка при добавлении бронирования', error);
+        res.status(500).json({ error: 'Ошибка сервера' });
+    }
+});
+
+app.patch('/api/resources/:id', async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    try {
+        const result = await con.query(
+            'UPDATE resources SET status = $1 WHERE id = $2 RETURNING *',
+            [status, id]
+        );
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Ресурс не найден' });
+        }
+        res.json(result.rows[0]);
+    } catch (error) {
         res.status(500).json({ error: 'Ошибка сервера' });
     }
 });

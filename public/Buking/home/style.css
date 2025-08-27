@@ -190,6 +190,90 @@ main {
     background: var(--accent-dark);
 }
 
+.status-free {
+    width: 100%;
+    text-align: right;
+    font-size: 0.9rem;
+    color: #36aa00;
+    margin-top: 4px;
+}
+
+.status-booked {
+    width: 100%;
+    text-align: right;
+    font-size: 0.9rem;
+    color: #b00;
+    margin-top: 4px;
+}
+
+/* Секция бронирования */
+.booking-section {
+    background: #fff;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 32px 28px;
+    margin-top: 40px;
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.booking-section h2 {
+    color: var(--accent-dark);
+    margin-bottom: 18px;
+    font-size: 1.4rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+#booking-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+#booking-form label {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 2px;
+}
+
+#booking-form input[type="email"],
+#booking-form input[type="text"],
+#booking-form input[type="date"] {
+    padding: 10px;
+    border: 1px solid #e0c9b0;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: #f9f6f2;
+    transition: border 0.2s;
+}
+
+#booking-form input:focus {
+    border-color: var(--accent);
+    outline: none;
+}
+
+#booking-form button[type="submit"] {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 8px;
+}
+
+#booking-form button[type="submit"]:hover {
+    background: var(--accent-dark);
+}
+
 /* Footer */
 footer {
     background: var(--footer-bg);
