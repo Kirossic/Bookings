@@ -13,7 +13,6 @@
     --container-width: 1200px;
 }
 
-/* Сброс стилей */
 * {
     margin: 0;
     padding: 0;
@@ -29,7 +28,6 @@ body {
     flex-direction: column;
 }
 
-/* Header */
 header {
     background: var(--header-bg);
     box-shadow: var(--shadow);
@@ -105,7 +103,6 @@ nav ul#options #close:hover {
     color: #b00;
 }
 
-/* Main */
 main {
     flex: 1;
     display: flex;
@@ -274,7 +271,6 @@ main {
     background: var(--accent-dark);
 }
 
-/* Footer */
 footer {
     background: var(--footer-bg);
     color: var(--text-light);
