@@ -20,8 +20,6 @@ app.get('/index', (req, res) => {
 
 app.use(express.static('public'));
 
-
-
 app.post('/api/users', async (req, res) => {
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
@@ -41,6 +39,23 @@ app.post('/api/users', async (req, res) => {
         res.status(201).json(result.rows[0]);
     } catch (error) {
         console.error('Ошибка при добавлении пользователя', error);
+        res.status(500).json({ error: 'Ошибка сервера' });
+    }
+});
+
+app.post('/api/resources', async (req, res) => {
+    const { name, type, description, price_per_hour, status } = req.body;
+    if (!name || !type || !description || !price_per_hour || !status) {
+        return res.status(400).json({ error: 'Заполните все поля' });
+    }
+    try {
+        const result = await con.query(
+            'INSERT INTO resources (name, type, description, price_per_hour, status) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            [name, type, description, price_per_hour, status]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (error) {
+        console.error('Ошибка при добавлении ресурса', error);
         res.status(500).json({ error: 'Ошибка сервера' });
     }
 });
@@ -99,6 +114,38 @@ app.delete('/api/bookings/:id', async (req, res) => {
         res.json({ message: 'Бронирование удалено', booking: result.rows[0] });
     } catch (error) {
         console.error('Ошибка при удалении бронирования', error);
+        res.status(500).json({ error: 'Ошибка сервера' });
+    }
+});
+
+app.delete('/api/users/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await con.query(
+            'DELETE FROM users WHERE id = $1 RETURNING *',
+            [id]
+        );
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Пользователь не найден' });
+        }
+        res.json({ message: 'Пользователь удалён', user: result.rows[0] });
+    } catch (error) {
+        res.status(500).json({ error: 'Ошибка сервера' });
+    }
+});
+
+app.delete('/api/resources/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await con.query(
+            'DELETE FROM resources WHERE id = $1 RETURNING *',
+            [id]
+        );
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Ресурс не найден' });
+        }
+        res.json({ message: 'Ресурс удалён', resource: result.rows[0] });
+    } catch (error) {
         res.status(500).json({ error: 'Ошибка сервера' });
     }
 });
