@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <header class="admin-header">
+        <h1>Админ-панель</h1>
+        <nav>
+            <ul class="admin-menu">
+                <li><a href="#users">Пользователи</a></li>
+                <li><a href="#roles">Роли</a></li>
+                <li><a href="#resources">Ресурсы</a></li>
+                <li><a href="#bookings">Бронирования</a></li>
+                <li><a href="#payments">Платежи</a></li>
+                <li><a href="#logs">Логи</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="admin-main">
+        <section id="users" class="admin-section">
+            <h2>Пользователи</h2>
+            <div id="users-table"></div>
+        </section>
+        <section id="roles" class="admin-section">
+            <h2>Роли</h2>
+            <div id="roles-table"></div>
+        </section>
+        <section id="resources" class="admin-section">
+            <h2>Ресурсы</h2>
+            <div id="resources-table"></div>
+        </section>
+        <section id="bookings" class="admin-section">
+            <h2>Бронирования</h2>
+            <div id="bookings-table"></div>
+        </section>
+        <section id="payments" class="admin-section">
+            <h2>Платежи</h2>
+            <div id="payments-table"></div>
+        </section>
+        <section id="logs" class="admin-section">
+            <h2>Логи</h2>
+            <div id="logs-table"></div>
+        </section>
+    </main>
+    <footer class="admin-footer">
+        <p>© 2026 Админ-панель проекта</p>
+    </footer>
+    <script src="admin.js"></script>
+</body>
+</html>
