@@ -1,0 +1,129 @@
+:root {
+    --accent: #4f8cff;
+    --accent-dark: #3561a7;
+    --bg: #f5f6fa;
+    --header-bg: #fff;
+    --section-bg: #fff;
+    --border-radius: 12px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.07);
+    --container-width: 1100px;
+}
+
+body {
+    background: var(--bg);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-header {
+    background: var(--header-bg);
+    box-shadow: var(--shadow);
+    padding: 18px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.admin-header h1 {
+    color: var(--accent-dark);
+    margin-bottom: 10px;
+    font-size: 2rem;
+    letter-spacing: 2px;
+}
+
+.admin-menu {
+    display: flex;
+    gap: 18px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.admin-menu li a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 18px;
+    border-radius: 6px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.admin-menu li a:hover,
+.admin-menu li a.active {
+    background: var(--accent);
+    color: #fff;
+}
+
+.admin-main {
+    flex: 1;
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 32px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.admin-section {
+    background: var(--section-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 24px 20px;
+}
+
+.admin-section h2 {
+    color: var(--accent-dark);
+    margin-bottom: 16px;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 12px;
+}
+
+.admin-table th, .admin-table td {
+    border: 1px solid #e0e6ed;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+.admin-table th {
+    background: #f0f4fa;
+    color: var(--accent-dark);
+    font-weight: 600;
+}
+
+.admin-table tr:nth-child(even) {
+    background: #f9fafc;
+}
+
+.admin-footer {
+    background: var(--header-bg);
+    color: #888;
+    text-align: center;
+    padding: 16px 0;
+    font-size: 1rem;
+    margin-top: auto;
+}
+
+/* Адаптивность */
+@media (max-width: 700px) {
+    .admin-main {
+        padding: 16px 4px;
+    }
+    .admin-section {
+        padding: 12px 6px;
+    }
+    .admin-header h1 {
+        font-size: 1.3rem;
+    }
+    .admin-menu {
+        gap: 8px;
+    }
+}

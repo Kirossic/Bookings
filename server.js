@@ -1,9 +1,10 @@
 const express = require('express');
-const app = express();
-app.use(express.json());
+/*const app = express();
+app.use(express.json());*/
 const con = require('./db_local/db.js');
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET || '789456123';
+const app = require('./api.js');
 
 app.get('/', (req, res) => {
     res.send('Привет, Express!');
@@ -19,45 +20,7 @@ app.get('/index', (req, res) => {
 
 app.use(express.static('public'));
 
-app.get('/api/users', async (req, res) => {
-    if (!con._connected) {
-        return res.status(500).json({ error: 'Database connection not established' });
-    } else {
-        try {
-            const result = await con.query('SELECT * FROM users');
-            res.json(result.rows);
-        } catch (error) {
-            console.error('Error executing query', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    }
-});
 
-app.get('/api/resources', async (req, res) => {
-    if (!con._connected) {
-        return res.status(500).json({ error: 'Database connection not established' });
-    }
-    try {
-        const result = await con.query('SELECT * FROM resources');
-        res.json(result.rows);
-    } catch (error) {
-        console.error('Error executing query', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
-
-app.get('/api/bookings', async (req, res) => {
-    if (!con._connected) {
-        return res.status(500).json({ error: 'Database connection not established' });
-    }
-    try {
-        const result = await con.query('SELECT * FROM bookings');
-        res.json(result.rows);
-    } catch (error) {
-        console.error('Error executing query', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
 
 app.post('/api/users', async (req, res) => {
     const { name, email, password } = req.body;
@@ -112,6 +75,30 @@ app.patch('/api/resources/:id', async (req, res) => {
         }
         res.json(result.rows[0]);
     } catch (error) {
+        res.status(500).json({ error: 'Ошибка сервера' });
+    }
+});
+
+app.delete('/api/bookings/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        con.query('UPDATE resources SET status = $1 WHERE id = (SELECT resource_id FROM bookings WHERE id = $2) RETURNING *', ['Свободен', id])
+            .then(result => {
+                console.log('Обновленный ресурс:', result.rows[0]);
+            })
+            .catch(err => {
+                console.error('Ошибка при обновлении ресурса', err);
+            });
+        const result = await con.query(
+            'DELETE FROM bookings WHERE id = $1 RETURNING *',
+            [id]
+        );
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Бронирование не найдено' });
+        }
+        res.json({ message: 'Бронирование удалено', booking: result.rows[0] });
+    } catch (error) {
+        console.error('Ошибка при удалении бронирования', error);
         res.status(500).json({ error: 'Ошибка сервера' });
     }
 });
