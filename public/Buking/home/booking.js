@@ -60,34 +60,53 @@ const log = async () => {
             </div>
         `;
         hotelList.appendChild(div);
+        if (status !== 'Свободен') {
+            div.style.opacity = '0.6';
+            div.style.pointerEvents = 'none';
+        }
+        const bookButton = div.querySelector('.hotel-card-btn');
+        bookButton.style.display = 'none'
+
         elements.booking_btn.addEventListener('click', async () => {
-            const email = elements.user_email.value;
-            const start_time = elements.check_in.value;
-            const end_time = elements.check_out.value;
-            const user = usersLocal.find(u => u.email === email);
-            const user_id = user ? user.id : null;
-            const resource_id = resource.id;
+        const email = elements.user_email.value;
+        const start_time = elements.check_in.value;
+        const end_time = elements.check_out.value;
+        const user = usersLocal.find(u => u.email === email);
+        const user_id = user ? user.id : null;
+        const resource_id = resource.id;
+        const resource_status = resource.status;
 
-            if (!email || !start_time || !end_time) {
-                alert('Заполните все поля');
-                return;
-            }
-
-            const res = await fetch('/api/bookings', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ user_id, resource_id, start_time, end_time, status: 'В ожидании' })
-            });
-            const req = await fetch('/api/resources/' + resource_id, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ status: 'В ожидании' })
-            });
-        console.log('Response status:', res.status + '   ' + res.ok);
+        if (!email || !start_time || !end_time) {
+            alert('Заполните все поля');
+            location.reload();
+            return;
+        }
+        if (resource_status != 'Свободен') {
+            alert('Отель уже забронирован')
+            location.reload();
+            return
+        }
+        if (!user) {
+            alert('Пользователь с таким email не найден');
+            location.reload();
+            return
+        }
+        
+        const res = await fetch('/api/bookings', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ user_id, resource_id, start_time, end_time, status: 'В ожидании' })
+        });
+        const req = await fetch('/api/resources/' + resource_id, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status: 'В ожидании' })
+        });
+    console.log('Response status:', res.status + '   ' + res.ok);
 
         if (req.ok) {
             const updatedResource = await req.json();
@@ -106,7 +125,9 @@ const log = async () => {
             alert('Ошибка при добавлении бронирования');
             console.error('Ошибка при добавлении бронирования');
         }
-        })
+    location.reload();
+    })
+
     console.log(resources);
     });
 }
