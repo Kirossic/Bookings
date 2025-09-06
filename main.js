@@ -28,9 +28,9 @@ con.query('SELECT * FROM users')
 // });
 /*
 //Удаление брони и обновление статуса ресурса
-con.query('UPDATE resources SET status = $1 WHERE id = $2 RETURNING *', ['Свободен', 5])
+con.query('UPDATE resources SET status = $1 WHERE id = $2 RETURNING *', ['Свободен', 3])
   .then(result => {
-    con.query('DELETE FROM bookings WHERE resource_id = $1 RETURNING *', [5])
+    con.query('DELETE FROM bookings WHERE resource_id = $1 RETURNING *', [3])
       .then(bookingResult => {
         console.log('Удаленные бронирования:', bookingResult.rows);
       })
