@@ -27,11 +27,33 @@ con.query('SELECT * FROM users')
 //     console.error('Ошибка при добавлении ресурса', err);
 // });
 /*
-con.query('UPDATE resources SET status = $1 WHERE id = $2 RETURNING *', ['Свободен', 3])
+//Удаление брони и обновление статуса ресурса
+con.query('UPDATE resources SET status = $1 WHERE id = $2 RETURNING *', ['Свободен', 5])
   .then(result => {
+    con.query('DELETE FROM bookings WHERE resource_id = $1 RETURNING *', [5])
+      .then(bookingResult => {
+        console.log('Удаленные бронирования:', bookingResult.rows);
+      })
+      .catch(err => {
+        console.error('Ошибка при удалении бронирований', err);
+      });
     console.log('Обновленный ресурс:', result.rows[0]);
   })
   .catch(err => {
     console.error('Ошибка при обновлении ресурса', err);
   });
+*/
+/*
+con.query('DELETE FROM bookings WHERE id = $1 RETURNING *', [7])
+  .then(result => {
+    console.log('Удаленный ресурс:', result.rows[0]);
+  })
+  .catch(err => {
+    console.error('Ошибка при удалении ресурса', err);
+  });
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
 */
