@@ -4,6 +4,8 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "node server.js",
+    "api": "node api.js",
     "dev": "nodemon main.js",
     "migrate": "node db_local/migrate.js"
   },
