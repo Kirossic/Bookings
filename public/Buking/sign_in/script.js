@@ -1,14 +1,3 @@
-let usersLocal = [];
-async function loadUsers() {
-    const res = await fetch('/api/users');
-    const usersDB = await res.json();
-
-    usersDB.forEach(u => {
-        usersLocal.push(u)
-    });
-}
-loadUsers();
-
 let elemrnts = {
     name: document.getElementById('name'),
     email: document.getElementById('email'),
@@ -20,12 +9,22 @@ elemrnts.button.addEventListener('click', async () => {
         alert('Заполните все поля');
         return;        
     }
-    const user = usersLocal.find(u => u.email === elemrnts.email.value && u.password_hash === elemrnts.password.value);
-    if (user) {
-        alert(`Добро пожаловать, ${user.name}!`);
+    try {
+        const res = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: elemrnts.email.value, password: elemrnts.password.value })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+            alert(data.error || 'Ошибка входа');
+            return;
+        }
+        // Используем auth модуль для сохранения
+        auth.login(data.token, data.user);
+        alert(`Добро пожаловать, ${data.user.name}!`);
         window.location.href = "../home/index.html";
-    } else {
-        alert('Неверный email или пароль.');
+    } catch (e) {
+        alert('Ошибка сети');
     }
 });
-console.log(usersLocal);
