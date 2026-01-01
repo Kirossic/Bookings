@@ -9,17 +9,17 @@ const elements = {
     check_out: document.getElementById("check-out")
 }
 
-let usersLocal = [];
-
-async function loadUsers() {
-    const res = await fetch('/api/users');
-    const usersDB = await res.json();
-
-    usersDB.forEach(u => {
-        usersLocal.push(u)
-    });
+// Проверка авторизации
+if (!auth.requireAuth('../sign_in/index.html')) {
+    // Переадресация произойдет в requireAuth
 }
-loadUsers();
+
+const currentUser = auth.getUser();
+
+// Предзаполняем email текущего пользователя, если доступен
+if (currentUser && elements.user_email) {
+    elements.user_email.value = currentUser.email;
+}
 
 elements.profile_pic[0].addEventListener('click', () => {
     elements.options.style.display = "inline";
@@ -71,8 +71,7 @@ const log = async () => {
         const email = elements.user_email.value;
         const start_time = elements.check_in.value;
         const end_time = elements.check_out.value;
-        const user = usersLocal.find(u => u.email === email);
-        const user_id = user ? user.id : null;
+        const user_id = currentUser ? currentUser.id : null;
         const resource_id = resource.id;
         const resource_status = resource.status;
 
@@ -86,20 +85,20 @@ const log = async () => {
             location.reload();
             return
         }
-        if (!user) {
-            alert('Пользователь с таким email не найден');
+        if (!user_id) {
+            alert('Не удалось определить пользователя');
             location.reload();
-            return
+            return;
         }
         
-        const res = await fetch('/api/bookings', {
+        const res = await auth.authFetch('/api/bookings', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ user_id, resource_id, start_time, end_time, status: 'В ожидании' })
         });
-        const req = await fetch('/api/resources/' + resource_id, {
+        const req = await auth.authFetch('/api/resources/' + resource_id, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'

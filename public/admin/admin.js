@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Проверка авторизации и роли администратора (role_id === 3)
+    if (!auth.requireRole(3, '../Buking/sign_in/index.html')) {
+        return;
+    }
+
     setupSection('users', '/api/users', ['id', 'name', 'email', 'role_id', 'password', 'created_at']);
     setupSection('roles', '/api/roles', ['id', 'name']);
     setupSection('resources', '/api/resources', ['id', 'name', 'description', 'type', 'status', 'price_per_hour']);
@@ -44,7 +49,7 @@ async function loadTable(sectionId, apiUrl, columns) {
     const tableDiv = document.getElementById(sectionId + '-table');
     tableDiv.innerHTML = '<p>Загрузка...</p>';
     try {
-        const res = await fetch(apiUrl);
+        const res = await auth.authFetch(apiUrl);
         if (!res.ok) throw new Error('Ошибка загрузки');
         const data = await res.json();
         if (!Array.isArray(data) || data.length === 0) {
@@ -71,7 +76,7 @@ async function loadTable(sectionId, apiUrl, columns) {
                     let url = apiUrl;
                     if (!url.endsWith('/')) url += '/';
                     url += btn.dataset.id;
-                    const res = await fetch(url, { method: 'DELETE' });
+                    const res = await auth.authFetch(url, { method: 'DELETE' });
                     if (!res.ok) throw new Error('Ошибка удаления');
                     alert('Запись удалена');
                     loadTable(sectionId, apiUrl, columns);
@@ -109,7 +114,7 @@ function showAddForm(sectionId, apiUrl, columns) {
             body[col] = form[col].value;
         });
         try {
-            const res = await fetch(apiUrl, {
+            const res = await auth.authFetch(apiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
