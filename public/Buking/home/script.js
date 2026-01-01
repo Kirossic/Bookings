@@ -61,7 +61,12 @@ function log() {
             
             const resourceId = button.id.split('-')[1];
             try {
-                const res = await fetch(`/api/resources/${resourceId}`, {
+                if (!auth.isAuthenticated()) {
+                    alert('Войдите, чтобы бронировать');
+                    window.location.href = '../sign_in/index.html';
+                    return;
+                }
+                const res = await auth.authFetch(`/api/resources/${resourceId}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
