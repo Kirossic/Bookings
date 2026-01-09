@@ -75,6 +75,13 @@ app.get('/api/payments/:id', verifyToken, async (req, res) => {
 
 **Тестирование:**
 ```bash
+# Создать токен и тестового пользователя для проверки
+curl -X POST http://localhost:3000/api/users -H "Content-Type: application/json" -d '{"name":"JWT Test User","email":"jwttest@test.com","password":"password123"}' 2>&1
+
+curl -s -X POST http://localhost:3000/api/login -H "Content-Type: application/json" -d '{"email":"jwttest@test.com","password":"password123"}'
+
+TOKEN="Токен который получен после второй команды" && curl -s -X GET http://localhost:3000/api/bookings -H "Authorization: Bearer $TOKEN" | head -c 200
+
 # Получить пользователя с ID 1
 curl http://localhost:3000/api/users/1 -H "Authorization: Bearer <TOKEN>"
 
@@ -86,12 +93,12 @@ curl http://localhost:3000/api/bookings/1 -H "Authorization: Bearer <TOKEN>"
 ```
 
 **Чек-лист:**
-- [ ] Добавить GET /api/users/:id
-- [ ] Добавить GET /api/resources/:id
-- [ ] Добавить GET /api/bookings/:id
-- [ ] Добавить GET /api/payments/:id
-- [ ] Протестировать каждый endpoint
-- [ ] Обработать 404 ошибки
+- [✅] Добавить GET /api/users/:id
+- [✅] Добавить GET /api/resources/:id
+- [✅] Добавить GET /api/bookings/:id
+- [✅] Добавить GET /api/payments/:id
+- [✅] Протестировать каждый endpoint
+- [✅] Обработать 404 ошибки
 
 ---
 
@@ -189,12 +196,12 @@ curl -X PUT http://localhost:3000/api/bookings/1 \
 ```
 
 **Чек-лист:**
-- [ ] Добавить PUT /api/users/:id с проверкой прав
-- [ ] Добавить PUT /api/resources/:id
-- [ ] Добавить PUT /api/bookings/:id (статус)
-- [ ] Добавить проверку прав (401, 403 ошибки)
-- [ ] Добавить обработку 404 ошибок
-- [ ] Протестировать каждый endpoint
+- [✅] Добавить PUT /api/users/:id с проверкой прав
+- [✅] Добавить PUT /api/resources/:id
+- [✅] Добавить PUT /api/bookings/:id (статус)
+- [✅] Добавить проверку прав (401, 403 ошибки)
+- [✅] Добавить обработку 404 ошибок
+- [✅] Протестировать каждый endpoint
 
 ---
 
@@ -314,15 +321,15 @@ app.put('/api/users/:id', verifyToken, validateRegister, async (req, res) => { .
 ```
 
 **Чек-лист:**
-- [ ] Создать middleware/validators.js
-- [ ] Добавить email валидацию
-- [ ] Добавить пароль валидацию
-- [ ] Добавить цена валидацию
-- [ ] Добавить дата валидацию
-- [ ] Применить к POST /api/users
-- [ ] Применить к POST /api/resources
-- [ ] Применить к POST /api/bookings
-- [ ] Протестировать с невалидными данными
+- [✅] Создать middleware/validators.js
+- [✅] Добавить email валидацию
+- [✅] Добавить пароль валидацию
+- [✅] Добавить цена валидацию
+- [✅] Добавить дата валидацию
+- [✅] Применить к POST /api/users
+- [✅] Применить к POST /api/resources
+- [✅] Применить к POST /api/bookings
+- [✅] Протестировать с невалидными данными
 
 ---
 

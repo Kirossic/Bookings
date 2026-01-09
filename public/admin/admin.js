@@ -58,11 +58,12 @@ async function loadTable(sectionId, apiUrl, columns) {
         }
         let html = '<table class="admin-table"><thead><tr>';
         columns.forEach(col => html += `<th>${col}</th>`);
-        html += '<th>Удалить</th></tr></thead><tbody>';
+        html += '<th>Удалить</th><th>Редактировать</th></tr></thead><tbody>';
         data.forEach(row => {
             html += '<tr>';
             columns.forEach(col => html += `<td>${row[col] ?? ''}</td>`);
             html += `<td><button class="delete-btn" data-id="${row.id}" data-section="${sectionId}">Удалить</button></td>`;
+            html += `<td><button class="edit-btn" data-id="${row.id}" data-section="${sectionId}">Редактировать</button></td>`;
             html += '</tr>';
         });
         html += '</tbody></table>';
@@ -87,6 +88,14 @@ async function loadTable(sectionId, apiUrl, columns) {
                 }
             });
         });
+
+        // Назначаем обработчики кнопкам редактирования
+        tableDiv.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const record = data.find(r => r.id == btn.dataset.id);
+                showEditForm(sectionId, apiUrl, columns, record);
+            });
+        });
     } catch (err) {
         tableDiv.innerHTML = '<p style="color:red;">Ошибка загрузки данных</p>';
     }
@@ -94,11 +103,24 @@ async function loadTable(sectionId, apiUrl, columns) {
 
 // Форма добавления записи
 function showAddForm(sectionId, apiUrl, columns) {
+    const numericColumns = new Set([
+        'id',
+        'role_id',
+        'price_per_hour',
+        'user_id',
+        'resource_id',
+        'booking_id',
+        'payment_id',
+        'log_id',
+    ]);
+
     const tableDiv = document.getElementById(sectionId + '-table');
     let formHtml = `<form id="add-form"><h3>Добавить ${sectionId}</h3>`;
     columns.forEach(col => {
         if (col === 'id' || col === 'created_at') return;
-        formHtml += `<label>${col}: <input name="${col}" required></label><br>`;
+        const typeinput = numericColumns.has(col) ? 'number' : 'text';
+
+        formHtml += `<label>${col}: <input name="${col}" type="${typeinput}" required></label><br>`;
     });
     formHtml += `<button type="submit">Сохранить</button> <button type="button" id="cancel-add">Отмена</button></form>`;
     tableDiv.innerHTML = formHtml;
@@ -119,11 +141,63 @@ function showAddForm(sectionId, apiUrl, columns) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
             });
-            if (!res.ok) throw new Error('Ошибка добавления');
+            if (!res.ok) throw new Error('Ошибка добавления') && console.log(res);
             alert('Запись добавлена');
             loadTable(sectionId, apiUrl, columns);
         } catch (err) {
             alert('Ошибка при добавлении');
+            console.log(err);
+            
+        }
+    };
+}
+
+// Форма изменения записей
+function showEditForm(sectionId, apiUrl, columns, record) {
+    const tableDiv = document.getElementById(sectionId + '-table');
+    let formHtml = `<form id="edit-form"><h3>Редактировать ${sectionId}</h3>`;
+    columns.forEach(col => {
+        if (col === 'id' || col === 'created_at') {
+            formHtml += `<label>${col}: <input name="${col}" value="${record[col] ?? ''}" readonly></label><br>`;
+        } else {
+            const isPassword = sectionId === 'users' && col === 'password';
+            const requiredAttr = isPassword ? '' : 'required';
+            formHtml += `<label>${col}: <input name="${col}" value="${record[col] ?? ''}" ${requiredAttr}></label><br>`;
+        }
+    });
+    formHtml += `<button type="submit">Сохранить</button> <button type="button" id="cancel-edit">Отмена</button></form>`;
+    tableDiv.innerHTML = formHtml;
+
+    document.getElementById('cancel-edit').onclick = () => loadTable(sectionId, apiUrl, columns);
+
+    document.getElementById('edit-form').onsubmit = async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const body = {};
+        columns.forEach(col => {
+            if (col === 'id' || col === 'created_at') return;
+            const value = form[col].value;
+            if (value === '') return;
+            body[col] = value;
+        });
+        try {
+            let url = apiUrl;
+            if (!url.endsWith('/')) url += '/';
+            url += record.id;
+            const res = await auth.authFetch(url, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                console.error('PATCH error:', errData);
+                throw new Error(errData.error || 'Ошибка обновления');
+            }
+            alert('Запись обновлена');
+            loadTable(sectionId, apiUrl, columns);
+        } catch (err) {
+            alert('Ошибка при обновлении');
             console.log(err);
             
         }

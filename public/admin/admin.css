@@ -126,8 +126,19 @@ body {
     background: #f9fafc;
 }
 
-.delete-btn {
+.delete-btn{
     background: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.edit-btn {
+    background: #2db40b;
     color: #fff;
     border: none;
     border-radius: 6px;
@@ -141,7 +152,11 @@ body {
     background: #c0392b;
 }
 
-#add-form {
+.edit-btn:hover {
+    background: #27ae60;
+}
+
+#add-form, #edit-form {
     background: #f9fafc;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(79,140,255,0.07);
@@ -152,13 +167,13 @@ body {
     gap: 10px;
 }
 
-#add-form label {
+#add-form label, #edit-form label {
     font-size: 1rem;
     color: #555;
     margin-bottom: 2px;
 }
 
-#add-form input {
+#add-form input, #edit-form input {
     padding: 8px;
     border: 1px solid #e0c9b0;
     border-radius: 6px;
@@ -168,12 +183,12 @@ body {
     transition: border 0.2s;
 }
 
-#add-form input:focus {
+#add-form input:focus, #edit-form input:focus {
     border-color: var(--accent);
     outline: none;
 }
 
-#add-form button[type="submit"] {
+#add-form button[type="submit"], #edit-form button[type="submit"] {
     background: var(--accent);
     color: #fff;
     border: none;
@@ -186,11 +201,11 @@ body {
     margin-top: 8px;
 }
 
-#add-form button[type="submit"]:hover {
+#add-form button[type="submit"]:hover, #edit-form button[type="submit"]:hover {
     background: var(--accent-dark);
 }
 
-#cancel-add {
+#cancel-add, #cancel-edit {
     background: #e0e6ed;
     color: #222;
     border: none;
@@ -203,7 +218,7 @@ body {
     transition: background 0.2s;
 }
 
-#cancel-add:hover {
+#cancel-add:hover, #cancel-edit:hover {
     background: #cfd8dc;
 }
 
@@ -230,7 +245,7 @@ body {
     .admin-menu {
         gap: 8px;
     }
-    .add-btn, .delete-btn {
+    .add-btn, .delete-btn, #add-form button[type="submit"], #edit-form button[type="submit"], #cancel-add, #cancel-edit {
         padding: 8px 10px;
         font-size: 0.9rem;
     }
