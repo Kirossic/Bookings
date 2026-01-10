@@ -1,6 +1,6 @@
 # 📑 ИНДЕКС ДОКУМЕНТАЦИИ ПРОЕКТА BUKINGS
 
-**Последнее обновление:** 2 января 2026  
+**Последнее обновление:** 10 января 2026  
 **Версия проекта:** 2.1  
 **Прогресс:** 47% завершено
 
@@ -9,19 +9,19 @@
 ## 🚀 БЫСТРЫЙ СТАРТ
 
 ### Если вы новичок в проекте:
-1. Прочитайте [README.md](README.md) (10 KB) - общее описание
-2. Посмотрите [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) (19 KB) - структура проекта
-3. Откройте [FINAL_REPORT.md](FINAL_REPORT.md) (12 KB) - актуальный статус
+1. Прочитайте [README.md](README.md) — общее описание
+2. Посмотрите [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) — структура проекта
+3. Откройте [FINAL_REPORT.md](FINAL_REPORT.md) — актуальный статус
 
 ### Если вы готовы начать разработку:
-1. Откройте [CRITICAL_TASKS.md](CRITICAL_TASKS.md) (13 KB) - что нужно делать сейчас
-2. Используйте [CODE_TEMPLATES.md](CODE_TEMPLATES.md) (25 KB) - готовые шаблоны кода
-3. Справляйтесь с [JWT_QUICKSTART.md](JWT_QUICKSTART.md) (7.9 KB) - быстрая справка по JWT
+1. Откройте [CRITICAL_TASKS.md](CRITICAL_TASKS.md) — что нужно делать сейчас
+2. Используйте [CODE_TEMPLATES.md](CODE_TEMPLATES.md) — готовые шаблоны кода
+3. Справляйтесь с [JWT_QUICKSTART.md](JWT_QUICKSTART.md) — быстрая справка по JWT
 
 ### Если вы отслеживаете прогресс:
-1. Проверьте [PROJECT_CHECKLIST.md](PROJECT_CHECKLIST.md) (55 KB) - основной контрольный список
-2. Прочитайте [FINAL_REPORT.md](FINAL_REPORT.md) (12 KB) - итоговый отчет
-3. Посмотрите [UPDATES_SUMMARY.md](UPDATES_SUMMARY.md) (7.6 KB) - что изменилось
+1. Проверьте [PROJECT_CHECKLIST.md](PROJECT_CHECKLIST.md) — основной контрольный список
+2. Прочитайте [FINAL_REPORT.md](FINAL_REPORT.md) — итоговый отчет
+3. Посмотрите [UPDATES_SUMMARY.md](UPDATES_SUMMARY.md) — что изменилось
 
 ---
 
@@ -29,11 +29,9 @@
 
 ### 🎯 ФАЙЛЫ ДЛЯ НЕМЕДЛЕННОГО ДЕЙСТВИЯ
 
-| Файл | Размер | Назначение |
-|------|--------|-----------|
-| [**CRITICAL_TASKS.md**](CRITICAL_TASKS.md) | 13 KB | 🔴 **ГЛАВНЫЙ ФАЙЛ** - 4 критические задачи с кодом готовым к копированию |
-| [FINAL_REPORT.md](FINAL_REPORT.md) | 12 KB | Итоговый отчет о текущем статусе проекта (47% готовности) |
-| [UPDATES_SUMMARY.md](UPDATES_SUMMARY.md) | 7.6 KB | Подробная сводка всех изменений в PROJECT_CHECKLIST.md |
+• [**CRITICAL_TASKS.md**](CRITICAL_TASKS.md): 🔴 Главный файл — 4 критические задачи с кодом
+• [FINAL_REPORT.md](FINAL_REPORT.md): Итоговый отчет о текущем статусе (47%)
+• [UPDATES_SUMMARY.md](UPDATES_SUMMARY.md): Сводка изменений в PROJECT_CHECKLIST.md
 
 **👉 НАЧНИТЕ ОТСЮДА:** Откройте [CRITICAL_TASKS.md](CRITICAL_TASKS.md)
 
@@ -41,11 +39,9 @@
 
 ### 📋 ПЛАНИРОВАНИЕ И ОТСЛЕЖИВАНИЕ
 
-| Файл | Размер | Назначение |
-|------|--------|-----------|
-| [**PROJECT_CHECKLIST.md**](PROJECT_CHECKLIST.md) | 55 KB | Основной контрольный список на 6 месяцев разработки |
-| [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) | 19 KB | Структура всех файлов и папок проекта |
-| [ERD_DIAGRAM.md](ERD_DIAGRAM.md) | 14 KB | Диаграмма БД (Entity Relationship Diagram) |
+• [**PROJECT_CHECKLIST.md**](PROJECT_CHECKLIST.md): Основной контрольный список на 6 месяцев
+• [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md): Фактическая структура проекта
+• [ERD_DIAGRAM.md](ERD_DIAGRAM.md): Диаграмма БД (ERD)
 
 **📊 СТАТУС МЕСЯЦЕВ:**
 - ✅ Месяц 1: 80% (Проектирование, БД)
@@ -58,9 +54,7 @@
 
 ### 💻 ПРИМЕРЫ КОДА
 
-| Файл | Размер | Назначение |
-|------|--------|-----------|
-| [**CODE_TEMPLATES.md**](CODE_TEMPLATES.md) | 25 KB | 1200+ строк готовых шаблонов кода (SQL, Node.js, React, Docker, CI/CD) |
+• [**CODE_TEMPLATES.md**](CODE_TEMPLATES.md): Шаблоны кода (SQL, Node.js, Docker, CI/CD, React опционально)
 
 **ВКЛЮЧАЕТ:**
 - SQL миграции (V001-V003)
@@ -75,10 +69,8 @@
 
 ### 🔐 БЕЗОПАСНОСТЬ И АУТЕНТИФИКАЦИЯ
 
-| Файл | Размер | Назначение |
-|------|--------|-----------|
-| [JWT_AUTH_README.md](JWT_AUTH_README.md) | 8.3 KB | Полная документация JWT аутентификации |
-| [JWT_QUICKSTART.md](JWT_QUICKSTART.md) | 7.9 KB | Быстрая справка с примерами JWT |
+• [JWT_AUTH_README.md](JWT_AUTH_README.md): Полная документация JWT
+• [JWT_QUICKSTART.md](JWT_QUICKSTART.md): Быстрая справка с примерами
 
 **СОДЕРЖАТ:**
 - Как работает JWT в проекте
@@ -91,23 +83,17 @@
 
 ### 📖 ОБЩИЕ ДОКУМЕНТЫ
 
-| Файл | Размер | Назначение |
-|------|--------|-----------|
-| [README.md](README.md) | 10 B | Общее описание проекта |
+• [README.md](README.md): Общее описание проекта
 
 ---
 
-## 📊 СТАТИСТИКА ДОКУМЕНТАЦИИ
+## 📊 СТАТУС ПРОЕКТА
 
-```
-Всего документов:    10 файлов
-Общий размер:        173 KB
-Обновлено:          2 января 2026
-Версия:             2.1
-
-Новых файлов:       3 (CRITICAL_TASKS.md, UPDATES_SUMMARY.md, FINAL_REPORT.md)
-Обновленных:        1 (PROJECT_CHECKLIST.md - 170 новых строк)
-```
+- Месяц 1: 80% (Проектирование, БД)
+- Месяц 2: 75% (Базовый API, JWT, админка)
+- Месяц 5: 15% (Админка: 40% выполнено)
+- Месяцы 3,4,6: 0% (в очереди)
+- Итого: 47% завершено
 
 ---
 
@@ -226,7 +212,7 @@
 
 **Проект:** Bukings (Система бронирования)  
 **Прогресс:** 47% завершено  
-**Последнее обновление:** 2 января 2026  
+**Последнее обновление:** 10 января 2026  
 **Версия:** 2.1  
 **Статус:** 🟢 Готово к разработке
 

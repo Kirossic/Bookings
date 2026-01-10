@@ -3,119 +3,71 @@
 ## 📁 Структура папок проекта
 
 ```
-bukings/
-├── 📄 README.md                     # Основная документация
-├── 📄 PROJECT_CHECKLIST.md          # ⭐ ПОЛНЫЙ ПЛАН ПРОЕКТА
-├── 📄 ERD_DIAGRAM.md                # ⭐ ДИАГРАММА БД
-├── 📄 JWT_AUTH_README.md            # Документация JWT
-├── 📄 JWT_QUICKSTART.md             # Быстрый старт JWT
-├── 
-├── 📁 backend/                      # Backend код
-│   ├── hashing.js                   # Хеширование паролей (bcryptjs)
-│   ├── Verify_Token.js              # Проверка JWT токенов
-│   └── [новые модули будут здесь]
-├──
-├── 📁 db/                           # База данных
-│   ├── migrations/
-│   │   ├── V001__Create_tables.sql       # ✅ Нужна: таблицы
-│   │   ├── V002__Add_indexes.sql         # ✅ Нужна: индексы
-│   │   └── V003__Add_triggers.sql        # ✅ Нужна: триггеры
-│   ├── db.js                            # Подключение к БД
-│   ├── migrate.js                       # Flyway миграции
-│   └── examples.sql                     # Примеры запросов
-├──
-├── 📁 public/                       # Frontend код
-│   ├── 📁 js/
-│   │   ├── auth.js                  # ✅ Модуль JWT на фронте
-│   │   └── nav.js                   # Навигация
-│   ├── 📁 Buking/
-│   │   ├── 📁 home/
-│   │   │   ├── index.html           # Главная страница
-│   │   │   ├── script.js            # ✅ Логика с JWT
-│   │   │   ├── booking.html         # Страница бронирования
-│   │   │   └── booking.js           # ✅ Логика бронирования
-│   │   ├── 📁 sign_in/
+Bukings/
+├── api.js
+├── main.js
+├── package.json
+├── README.md
+├── server.js
+├── Untitled.sql
+├── backend/
+│   ├── hashing.js
+│   └── Verify_Token.js
+├── db_local/
+│   ├── db.js
+│   └── migrate.js
+├── DOC/
+│   ├── CODE_TEMPLATES.md
+│   ├── CRITICAL_TASKS.md
+│   ├── DOCUMENTATION_INDEX.md
+│   ├── ERD_DIAGRAM.md
+│   ├── FINAL_REPORT.md
+│   ├── JWT_AUTH_README.md
+│   ├── JWT_QUICKSTART.md
+│   ├── PROJECT_CHECKLIST.md
+│   ├── PROJECT_STRUCTURE.md
+│   └── UPDATES_SUMMARY.md
+├── middleware/
+│   ├── errorHandler.js
+│   └── validators.js
+├── public/
+│   ├── index.html
+│   ├── admin/
+│   │   ├── admin.css
+│   │   ├── admin.html
+│   │   └── admin.js
+│   ├── Buking/
+│   │   ├── home/
+│   │   │   ├── booking.html
+│   │   │   ├── booking.js
 │   │   │   ├── index.html
-│   │   │   └── script.js            # ✅ Вход с JWT
-│   │   └── 📁 sign_up/
+│   │   │   ├── script.js
+│   │   │   └── style.css
+│   │   ├── sign_in/
+│   │   │   ├── index.html
+│   │   │   ├── script.js
+│   │   │   └── style.css
+│   │   └── sign_up/
 │   │       ├── index.html
-│   │       └── script.js            # Регистрация
-│   └── 📁 admin/                    # ✅ Требует разработки
-│       ├── admin.html
-│       ├── admin.js                 # С проверкой роли
-│       └── admin.css
-├──
-├── 📁 tests/                        # ⏳ Нужны тесты
-│   ├── auth.test.js
-│   ├── bookings.test.js
-│   └── resources.test.js
-├──
-├── 📁 config/                       # Конфигурация
-│   ├── database.js                  # ✅ Есть
-│   └── environment.js               # ⏳ Нужна
-├──
-├── 📁 middleware/                   # ⏳ Нужно расширить
-│   ├── errorHandler.js              # ⏳ Обработка ошибок
-│   ├── validate.js                  # ⏳ Валидация
-│   └── rateLimit.js                 # ⏳ Rate limiting
-├──
-├── 📁 routes/                       # ⏳ Структурировать
-│   ├── auth.js                      # ⏳ Маршруты аутентификации
-│   ├── users.js                     # ⏳ CRUD пользователей
-│   ├── resources.js                 # ⏳ CRUD ресурсов
-│   ├── bookings.js                  # ⏳ CRUD бронирований
-│   └── payments.js                  # ⏳ Платежи (Stripe)
-├──
-├── 📁 .github/                      # ⏳ GitHub Actions
-│   └── workflows/
-│       ├── test.yml                 # ⏳ Тестирование
-│       └── deploy.yml               # ⏳ Деплой
-├──
-├── 📁 docker/                       # ⏳ Docker конфигурация
-│   ├── Dockerfile                   # ⏳ Docker образ
-│   └── docker-compose.yml           # ⏳ Сервисы
-├──
-├── 📁 admin/                        # ⏳ React админка
-│   ├── src/
-│   │   ├── pages/
-│   │   │   ├── Users.jsx
-│   │   │   ├── Resources.jsx
-│   │   │   ├── Bookings.jsx
-│   │   │   └── Analytics.jsx
-│   │   └── components/
-│   │       ├── Table.jsx
-│   │       ├── Form.jsx
-│   │       └── Chart.jsx
-│   └── package.json
-├──
-├── 📄 .env.example                  # Пример переменных
-├── 📄 .gitignore                    # ✅ Git ignore
-├── 📄 package.json                  # ✅ Зависимости
-├── 📄 package-lock.json             # ✅ Lock файл
-├── 📄 server.js                     # ✅ Основной сервер
-├── 📄 api.js                        # ✅ API routes
-└── 📄 Untitled.sql                  # ⏳ Убрать / использовать
+│   │       ├── script.js
+│   │       └── style.css
+│   └── js/
+│       ├── auth.js
+│       └── nav.js
 ```
 
 ---
 
-## 📊 СТАТУС ФАЙЛОВ
+## 📊 СТАТУС ОСНОВНЫХ КОМПОНЕНТОВ
 
-| Файл | Статус | Дополнительно |
-|------|--------|---------------|
-| server.js | ✅ 60% | Нужны PUT/DELETE, обработка ошибок |
-| api.js | ✅ 60% | Нужны PUT/DELETE для всех сущностей |
-| backend/hashing.js | ✅ 100% | Готово |
-| backend/Verify_Token.js | ✅ 100% | Готово |
-| public/js/auth.js | ✅ 100% | Готово |
-| public/admin/admin.js | ✅ 70% | Нужны доп. функции |
-| public/Buking/home/script.js | ✅ 80% | Нужна оптимизация |
-| public/Buking/home/booking.js | ✅ 80% | Нужна валидация |
-| db/migrations/*.sql | ⏳ 0% | Нужно создать |
-| tests/*.test.js | ⏳ 0% | Нужно написать |
-| .github/workflows/*.yml | ⏳ 0% | Нужно настроить |
-| docker/Dockerfile | ⏳ 0% | Нужно создать |
-| admin/ (React) | ⏳ 0% | Нужно разработать |
+- server.js: ✅ работает, требуется централизованная обработка ошибок
+- api.js: ✅ базовые GET/POST/DELETE реализованы; ⏳ добавить GET/:id и PUT/:id
+- backend/Verify_Token.js: ✅ JWT проверка
+- backend/hashing.js: ✅ хеширование паролей (bcryptjs)
+- public/js/auth.js: ✅ модуль аутентификации
+- public/admin/*: ✅ базовая админка (Vanilla JS), ⏳ требуется редактирование/фильтры/пагинация
+- db_local/db.js: ✅ подключение к PostgreSQL
+- middleware/*: ⏳ вынести валидацию и error handler
 
 ---
 
