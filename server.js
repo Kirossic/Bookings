@@ -26,12 +26,12 @@ app.use(express.static('public'));
 app.post('/api/users', validateRegister, async (req, res, next) => {
     const { name, email, password, role_id } = req.body;
     if (!name || !email || !password) {
-        return res.status(400).json({ error: 'Заполните все поля' });
+        throw new ApiError(400, 'Заполните все поля');
     }
     try {
         const check = await con.query('SELECT 1 FROM users WHERE email = $1', [email]);
         if (check.rowCount > 0) {
-            return res.status(409).json({ error: 'Пользователь с таким email уже существует' });
+            throw new ApiError(409, 'Пользователь с таким email уже существует');
         }
 
         const hashed = await hashPassword(password);
@@ -43,7 +43,7 @@ app.post('/api/users', validateRegister, async (req, res, next) => {
         res.status(201).json(result.rows[0]);
     } catch (error) {
         console.error('Ошибка при добавлении пользователя', error);
-        res.status(500).json({ error: 'Ошибка сервера' });
+        throw new ApiError(500, 'Ошибка сервера');
         next(error);
     }
 });
@@ -51,7 +51,7 @@ app.post('/api/users', validateRegister, async (req, res, next) => {
 app.post('/api/resources', verifyToken, validateResource, async (req, res, next) => {
     const { name, type, description, price_per_hour, status } = req.body;
     if (!name || !type || !description || !price_per_hour || !status) {
-        return res.status(400).json({ error: 'Заполните все поля' });
+        throw new ApiError(400, 'Заполните все поля');
     }
     try {
         const result = await con.query(
@@ -61,7 +61,7 @@ app.post('/api/resources', verifyToken, validateResource, async (req, res, next)
         res.status(201).json(result.rows[0]);
     } catch (error) {
         console.error('Ошибка при добавлении ресурса', error);
-        res.status(500).json({ error: 'Ошибка сервера' });
+        throw new ApiError(500, 'Ошибка сервера');
         next(error);
     }
 });
@@ -69,7 +69,7 @@ app.post('/api/resources', verifyToken, validateResource, async (req, res, next)
 app.post('/api/bookings', verifyToken, validateBooking, async (req, res, next) => {
     const { user_id, resource_id, start_time, end_time, status } = req.body;
     if (!user_id || !resource_id || !start_time || !end_time || !status) {
-        return res.status(400).json({ error: 'Заполните все поля' });
+        throw new ApiError(400, 'Заполните все поля');
     }
     try {
         const result = await con.query(
@@ -79,7 +79,7 @@ app.post('/api/bookings', verifyToken, validateBooking, async (req, res, next) =
         res.status(201).json(result.rows[0]);
     } catch (error) {
         console.error('Ошибка при добавлении бронирования', error);
-        res.status(500).json({ error: 'Ошибка сервера' });
+        throw new ApiError(500, 'Ошибка сервера');
         next(error);
     }
 });
@@ -93,11 +93,11 @@ app.patch('/api/resources/:id', verifyToken, validateResource, async (req, res, 
             [status, id]
         );
         if (result.rowCount === 0) {
-            return res.status(404).json({ error: 'Ресурс не найден' });
+            throw new ApiError(404, 'Ресурс не найден');
         }
         res.json(result.rows[0]);
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка сервера' });
+        throw new ApiError(500, 'Ошибка сервера');
         next(error);
     }
 });
@@ -117,12 +117,12 @@ app.delete('/api/bookings/:id', verifyToken, async (req, res, next) => {
             [id]
         );
         if (result.rowCount === 0) {
-            return res.status(404).json({ error: 'Бронирование не найдено' });
+            throw new ApiError(404, 'Бронирование не найдено');
         }
         res.json({ message: 'Бронирование удалено', booking: result.rows[0] });
     } catch (error) {
         console.error('Ошибка при удалении бронирования', error);
-        res.status(500).json({ error: 'Ошибка сервера' });
+        throw new ApiError(500, 'Ошибка сервера');
     }
 });
 
@@ -134,11 +134,11 @@ app.delete('/api/users/:id', verifyToken, async (req, res) => {
             [id]
         );
         if (result.rowCount === 0) {
-            return res.status(404).json({ error: 'Пользователь не найден' });
+            throw new ApiError(404, 'Пользователь не найден');
         }
         res.json({ message: 'Пользователь удалён', user: result.rows[0] });
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка сервера' });
+        throw new ApiError(500, 'Ошибка сервера');
     }
 });
 
@@ -150,11 +150,11 @@ app.delete('/api/resources/:id', verifyToken, async (req, res) => {
             [id]
         );
         if (result.rowCount === 0) {
-            return res.status(404).json({ error: 'Ресурс не найден' });
+            throw new ApiError(404, 'Ресурс не найден');
         }
         res.json({ message: 'Ресурс удалён', resource: result.rows[0] });
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка сервера' });
+        throw new ApiError(500, 'Ошибка сервера');
     }
 });
 
