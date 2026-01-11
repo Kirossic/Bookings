@@ -5,6 +5,8 @@ const con = require('./db_local/db.js');
 const app = require('./api.js');
 const { hashPassword } = require('./backend/hashing.js');
 const verifyToken = require('./backend/Verify_Token.js');
+const { validateRegister, validateResource, validateBooking } = require('./middleware/validators');
+const { errorHandler, ApiError } = require('./middleware/errorHandler.js');
 
 app.get('/', (req, res) => {
     res.send('Привет, Express!');
@@ -21,7 +23,7 @@ app.get('/index', (req, res) => {
 
 app.use(express.static('public'));
 
-app.post('/api/users', async (req, res) => {
+app.post('/api/users', validateRegister, async (req, res, next) => {
     const { name, email, password, role_id } = req.body;
     if (!name || !email || !password) {
         return res.status(400).json({ error: 'Заполните все поля' });
@@ -42,10 +44,11 @@ app.post('/api/users', async (req, res) => {
     } catch (error) {
         console.error('Ошибка при добавлении пользователя', error);
         res.status(500).json({ error: 'Ошибка сервера' });
+        next(error);
     }
 });
 
-app.post('/api/resources', verifyToken, async (req, res) => {
+app.post('/api/resources', verifyToken, validateResource, async (req, res, next) => {
     const { name, type, description, price_per_hour, status } = req.body;
     if (!name || !type || !description || !price_per_hour || !status) {
         return res.status(400).json({ error: 'Заполните все поля' });
@@ -59,10 +62,11 @@ app.post('/api/resources', verifyToken, async (req, res) => {
     } catch (error) {
         console.error('Ошибка при добавлении ресурса', error);
         res.status(500).json({ error: 'Ошибка сервера' });
+        next(error);
     }
 });
 
-app.post('/api/bookings', verifyToken, async (req, res) => {
+app.post('/api/bookings', verifyToken, validateBooking, async (req, res, next) => {
     const { user_id, resource_id, start_time, end_time, status } = req.body;
     if (!user_id || !resource_id || !start_time || !end_time || !status) {
         return res.status(400).json({ error: 'Заполните все поля' });
@@ -76,10 +80,11 @@ app.post('/api/bookings', verifyToken, async (req, res) => {
     } catch (error) {
         console.error('Ошибка при добавлении бронирования', error);
         res.status(500).json({ error: 'Ошибка сервера' });
+        next(error);
     }
 });
 
-app.patch('/api/resources/:id', verifyToken, async (req, res) => {
+app.patch('/api/resources/:id', verifyToken, validateResource, async (req, res, next) => {
     const { id } = req.params;
     const { status } = req.body;
     try {
@@ -93,10 +98,11 @@ app.patch('/api/resources/:id', verifyToken, async (req, res) => {
         res.json(result.rows[0]);
     } catch (error) {
         res.status(500).json({ error: 'Ошибка сервера' });
+        next(error);
     }
 });
 
-app.delete('/api/bookings/:id', verifyToken, async (req, res) => {
+app.delete('/api/bookings/:id', verifyToken, async (req, res, next) => {
     const { id } = req.params;
     try {
         con.query('UPDATE resources SET status = $1 WHERE id = (SELECT resource_id FROM bookings WHERE id = $2) RETURNING *', ['Свободен', id])
@@ -151,3 +157,5 @@ app.delete('/api/resources/:id', verifyToken, async (req, res) => {
         res.status(500).json({ error: 'Ошибка сервера' });
     }
 });
+
+app.use(errorHandler);
