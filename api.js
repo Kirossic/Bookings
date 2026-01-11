@@ -12,18 +12,18 @@ const { errorHandler, ApiError } = require('./middleware/errorHandler.js');
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
-        return res.status(400).json({ error: 'Заполните все поля' });
+        throw new ApiError(400, 'Заполните все поля');
     }
     try {
         const result = await con.query('SELECT * FROM users WHERE email = $1', [email]);
         if (result.rowCount === 0) {
-            return res.status(401).json({ error: 'Неверный email или пароль' });
+            throw new ApiError(401, 'Неверный email или пароль');
         }
         const user = result.rows[0];
 
         const ok = await comparePassword(password, user.password_hash);
         if (!ok) {
-            return res.status(401).json({ error: 'Неверный email или пароль' });
+            throw new ApiError(401, 'Неверный email или пароль');
         }
 
         const token = jwt.sign(
@@ -35,86 +35,86 @@ app.post('/api/login', async (req, res) => {
         res.json({ token, user: { id: user.id, name: user.name, email: user.email, role_id: user.role_id } });
     } catch (error) {
         console.error('Ошибка при входе пользователя', error);
-        res.status(500).json({ error: 'Ошибка сервера' });
+        throw new ApiError(500, 'Ошибка сервера');
     }
 });
 
 app.get('/api/users', async (req, res) => {
     if (!con._connected) {
-        return res.status(500).json({ error: 'Database connection not established' });
+        throw new ApiError(500, 'Database connection not established');
     } else {
         try {
             const result = await con.query('SELECT id, name, email, role_id, created_at FROM users');
             res.json(result.rows);
         } catch (error) {
             console.error('Error executing query', error);
-            res.status(500).json({ error: 'Internal Server Error' });
+            throw new ApiError(500, 'Ошибка сервера');
         }
     }
 });
 
 app.get('/api/resources', async (req, res) => {
     if (!con._connected) {
-        return res.status(500).json({ error: 'Database connection not established' });
+        throw new ApiError(500, 'Database connection not established');
     }
     try {
         const result = await con.query('SELECT * FROM resources');
         res.json(result.rows);
     } catch (error) {
         console.error('Error executing query', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        throw new ApiError(500, 'Ошибка сервера');
     }
 });
 
 app.get('/api/bookings', verifyToken, async (req, res) => {
     if (!con._connected) {
-        return res.status(500).json({ error: 'Database connection not established' });
+        throw new ApiError(500, 'Database connection not established');
     }
     try {
         const result = await con.query('SELECT * FROM bookings');
         res.json(result.rows);
     } catch (error) {
         console.error('Error executing query', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        throw new ApiError(500, 'Ошибка сервера');
     }
 });
 
 app.get('/api/roles', async (req, res) => {
     if (!con._connected) {
-        return res.status(500).json({ error: 'Database connection not established' });
+        throw new ApiError(500, 'Database connection not established');
     }
     try {
         const result = await con.query('SELECT * FROM roles');
         res.json(result.rows);
     } catch (error) {
         console.error('Error executing query', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        throw new ApiError(500, 'Ошибка сервера');
     }
 });
 
 app.get('/api/payments', verifyToken, async (req, res) => {
     if (!con._connected) {
-        return res.status(500).json({ error: 'Database connection not established' });
+        throw new ApiError(500, 'Database connection not established');
     }
     try {
         const result = await con.query('SELECT * FROM payments');
         res.json(result.rows);
     } catch (error) {
         console.error('Error executing query', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        throw new ApiError(500, 'Ошибка сервера');
     }
 });
 
 app.get('/api/logs', verifyToken, async (req, res) => {
     if (!con._connected) {
-        return res.status(500).json({ error: 'Database connection not established' });
+        throw new ApiError(500, 'Database connection not established');
     }
     try {
         const result = await con.query('SELECT * FROM logs');
         res.json(result.rows);
     } catch (error) {
         console.error('Error executing query', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        throw new ApiError(500, 'Ошибка сервера');
     }
 });
 
@@ -126,11 +126,11 @@ app.get('/api/users/:id', verifyToken, async (req, res, next) => {
             [id]
         );
         if (result.rowCount === 0) {
-            return res.status(404).json({ error: 'Пользователь не найден' });
+            throw new ApiError(404, 'Пользователь не найден');
         }
         res.json(result.rows[0]);
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка сервера' });
+        throw new ApiError(500, 'Ошибка сервера');
         next(error);
     }
 });
@@ -143,11 +143,11 @@ app.get('/api/resources/:id', verifyToken, async (req, res, next) => {
             [id]
         );
         if (result.rowCount === 0) {
-            return res.status(404).json({ error: 'Ресурс не найден' });
+            throw new ApiError(404, 'Ресурс не найден');
         }
         res.json(result.rows[0]);
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка сервера' });
+        throw new ApiError(500, 'Ошибка сервера');
         next(error);
     }
 });
@@ -160,12 +160,11 @@ app.get('/api/bookings/:id', verifyToken, async (req, res, next) => {
             [id]
         );
         if (result.rowCount === 0) {
-            return res.status(404).json({ error: 'Бронирование не найдено' });
+            throw new ApiError(404, 'Бронирование не найдено');
         }
         res.json(result.rows[0]);
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка сервера' });
-        next(error);
+        throw new ApiError(500, 'Ошибка сервера');
     }
 });
 
@@ -177,11 +176,11 @@ app.get('/api/roles/:id', verifyToken, async (req, res, next) => {
             [id]
         );
         if (result.rowCount === 0) {
-            return res.status(404).json({ error: 'Роль не найдена' });
+            throw new ApiError(404, 'Роль не найдена');
         }
         res.json(result.rows[0]);
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка сервера' });
+        throw new ApiError(500, 'Ошибка сервера');
         next(error);
     }
 });
@@ -194,11 +193,11 @@ app.get('/api/payments/:id', verifyToken, async (req, res, next) => {
             [id]
         );
         if (result.rowCount === 0) {
-            return res.status(404).json({ error: 'Платеж не найден' });
+            throw new ApiError(404, 'Платеж не найден');
         }
         res.json(result.rows[0]);
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка сервера' });
+        throw new ApiError(500, 'Ошибка сервера');
         next(error);
     }
 });
@@ -211,11 +210,11 @@ app.get('/api/logs/:id', verifyToken, async (req, res, next) => {
             [id]
         );
         if (result.rowCount === 0) {
-            return res.status(404).json({ error: 'Лог не найден' });
+            throw new ApiError(404, 'Лог не найден');
         }
         res.json(result.rows[0]);
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка сервера' });
+        throw new ApiError(500, 'Ошибка сервера');
         next(error);
     }
 });
@@ -223,7 +222,7 @@ app.get('/api/logs/:id', verifyToken, async (req, res, next) => {
 app.patch('/api/users/:id', verifyToken, validateRegister, async (req, res, next) => {
     const { id } = req.params;
     if ( req.user.id === id && req.user.role_id !== 3 && req.body.role_id !== 3) {
-        return res.status(403).json({ error: 'Нельзя изменить собственную роль на неадминистратора' });
+        throw new ApiError(403, 'Нельзя изменить собственную роль на неадминистратора');
     }
 
     try {
@@ -232,11 +231,11 @@ app.patch('/api/users/:id', verifyToken, validateRegister, async (req, res, next
             [req.body.name, req.body.email, req.body.role_id, id]
         );
         if (result.rowCount === 0) {
-            return res.status(404).json({ error: 'Пользователь не найден' });
+            throw new ApiError(404, 'Пользователь не найден');
         }
         res.json(result.rows[0]);
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка сервера' });
+        throw new ApiError(500, 'Ошибка сервера');
         next(error);
     }
 });
@@ -270,7 +269,7 @@ app.patch('/api/resources/:id', verifyToken, validateResource, async (req, res, 
         }
         
         if (updates.length === 0) {
-            return res.status(400).json({ error: 'Не указаны поля для обновления' });
+            throw new ApiError(400, 'Не указаны поля для обновления');
         }
         
         values.push(id);
@@ -278,12 +277,12 @@ app.patch('/api/resources/:id', verifyToken, validateResource, async (req, res, 
         const result = await con.query(query, values);
         
         if (result.rowCount === 0) {
-            return res.status(404).json({ error: 'Ресурс не найден' });
+            throw new ApiError(404, 'Ресурс не найден');
         }
         res.json(result.rows[0]);
     } catch (error) {
         console.error('Ошибка при обновлении ресурса:', error);
-        res.status(500).json({ error: 'Ошибка сервера' });
+        throw new ApiError(500, 'Ошибка сервера');
         next(error);
     }
 });
@@ -305,11 +304,11 @@ app.patch('/api/bookings/:id', verifyToken, validateBooking, async (req, res, ne
             [req.body.user_id, req.body.resource_id, req.body.start_time, req.body.end_time, req.body.status, id]
         );
         if (result.rowCount === 0) {
-            return res.status(404).json({ error: 'Бронирование не найдено' });
+            throw new ApiError(404, 'Бронирование не найдено');
         }
         res.json(result.rows[0]);
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка сервера' });
+        throw new ApiError(500, 'Ошибка сервера');
         next(error);
     }
 });
@@ -322,11 +321,11 @@ app.patch('/api/roles/:id', verifyToken, async (req, res, next) => {
             [req.body.name, id]
         );
         if (result.rowCount === 0) {
-            return res.status(404).json({ error: 'Роль не найдена' });
+            throw new ApiError(404, 'Роль не найдена');
         }
         res.json(result.rows[0]);
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка сервера' });
+        throw new ApiError(500, 'Ошибка сервера');
         next(error);
     }
 });
@@ -339,11 +338,11 @@ app.patch('/api/payments/:id', verifyToken, async (req, res, next) => {
             [req.body.booking_id, req.body.amount, req.body.status, req.body.payment_method, id]
         );
         if (result.rowCount === 0) {
-            return res.status(404).json({ error: 'Платеж не найден' });
+            throw new ApiError(404, 'Платеж не найден');
         }
         res.json(result.rows[0]);
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка сервера' });
+        throw new ApiError(500, 'Ошибка сервера');
         next(error);
     }
 });
@@ -356,11 +355,11 @@ app.patch('/api/logs/:id', verifyToken, async (req, res, next) => {
             [req.body.user_id, req.body.resource_id, req.body.start_time, req.body.end_time, req.body.status, id]
         );
         if (result.rowCount === 0) {
-            return res.status(404).json({ error: 'Лог не найден' });
+            throw new ApiError(404, 'Лог не найден');
         }
         res.json(result.rows[0]);
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка сервера' });
+        throw new ApiError(500, 'Ошибка сервера');
         next(error);
     }
 });
