@@ -235,8 +235,8 @@ app.patch('/api/users/:id', verifyToken, validateRegister, async (req, res, next
         }
         res.json(result.rows[0]);
     } catch (error) {
-        throw new ApiError(500, 'Ошибка сервера');
         next(error);
+        throw new ApiError(500, 'Ошибка сервера');
     }
 });
 
@@ -282,8 +282,8 @@ app.patch('/api/resources/:id', verifyToken, validateResource, async (req, res, 
         res.json(result.rows[0]);
     } catch (error) {
         console.error('Ошибка при обновлении ресурса:', error);
-        throw new ApiError(500, 'Ошибка сервера');
         next(error);
+        throw new ApiError(500, 'Ошибка сервера');
     }
 });
 
@@ -308,8 +308,8 @@ app.patch('/api/bookings/:id', verifyToken, validateBooking, async (req, res, ne
         }
         res.json(result.rows[0]);
     } catch (error) {
-        throw new ApiError(500, 'Ошибка сервера');
         next(error);
+        throw new ApiError(500, 'Ошибка сервера');
     }
 });
 
@@ -325,8 +325,8 @@ app.patch('/api/roles/:id', verifyToken, async (req, res, next) => {
         }
         res.json(result.rows[0]);
     } catch (error) {
-        throw new ApiError(500, 'Ошибка сервера');
         next(error);
+        throw new ApiError(500, 'Ошибка сервера');
     }
 });
 
@@ -342,8 +342,8 @@ app.patch('/api/payments/:id', verifyToken, async (req, res, next) => {
         }
         res.json(result.rows[0]);
     } catch (error) {
-        throw new ApiError(500, 'Ошибка сервера');
         next(error);
+        throw new ApiError(500, 'Ошибка сервера');
     }
 });
 
@@ -359,8 +359,8 @@ app.patch('/api/logs/:id', verifyToken, async (req, res, next) => {
         }
         res.json(result.rows[0]);
     } catch (error) {
-        throw new ApiError(500, 'Ошибка сервера');
         next(error);
+        throw new ApiError(500, 'Ошибка сервера');
     }
 });
 
