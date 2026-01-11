@@ -49,21 +49,66 @@
 - `GET /api/resources` - получить список ресурсов
 
 ##### Защищённые (требуют токен)
-- `GET /api/users` - список пользователей
+
+**GET (чтение):**
+- `GET /api/users` - список пользователей (с пагинацией: ?limit=10&offset=0&q=...)
+- `GET /api/users/:id` - получить пользователя по ID
+- `GET /api/resources` - список ресурсов
+- `GET /api/resources/:id` - получить ресурс по ID
 - `GET /api/bookings` - список бронирований
+- `GET /api/bookings/:id` - получить бронирование по ID
+- `GET /api/roles` - список ролей
+- `GET /api/roles/:id` - получить роль по ID
 - `GET /api/payments` - список платежей
+- `GET /api/payments/:id` - получить платёж по ID
 - `GET /api/logs` - логи действий
-- `POST /api/resources` - создать ресурс
-- `POST /api/bookings` - создать бронирование
-- `PATCH /api/resources/:id` - обновить ресурс
+- `GET /api/logs/:id` - получить лог по ID
+
+**POST (создание):**
+- `POST /api/resources` - создать ресурс (валидация: validateResource)
+- `POST /api/bookings` - создать бронирование (валидация: validateBooking)
+
+**PATCH (обновление):**
+- `PATCH /api/users/:id` - обновить пользователя (валидация: validateRegister)
+- `PATCH /api/resources/:id` - обновить ресурс (валидация: validateResource)
+- `PATCH /api/bookings/:id` - обновить бронирование (валидация: validateBooking)
+- `PATCH /api/roles/:id` - обновить роль
+- `PATCH /api/payments/:id` - обновить платёж
+- `PATCH /api/logs/:id` - обновить лог
+
+**DELETE (удаление):**
 - `DELETE /api/bookings/:id` - удалить бронирование
-- `DELETE /api/users/:id` - удалить пользователя
-- `DELETE /api/resources/:id` - удалить ресурс
+- `DELETE /api/users/:id` - удалить пользователя (requireRole: [3])
+- `DELETE /api/resources/:id` - удалить ресурс (requireRole: [3])
 
 **Заголовок для защищённых запросов:**
 ```
 Authorization: Bearer {your_token_here}
 ```
+
+#### Валидация
+
+Для POST/PATCH запросов используются middleware валидаторы:
+- `validateRegister` - проверяет name, email, password для users
+- `validateResource` - проверяет name, price_per_hour для resources
+- `validateBooking` - проверяет start_time, end_time, диапазон дат для bookings
+
+**Примеры ошибок валидации:**
+```json
+{
+  "error": "Invalid email format",
+  "status": 400,
+  "timestamp": "2026-01-10T10:30:00.000Z"
+}
+```
+
+#### Ошибки и HTTP коды
+
+- `400` - невалидные данные (используется ApiError)
+- `401` - неверные учётные данные или истёк токен
+- `403` - доступ запрещён (insufficent role)
+- `404` - ресурс не найден
+- `500` - ошибка сервера
 
 ### Frontend (Vanilla JS)
 

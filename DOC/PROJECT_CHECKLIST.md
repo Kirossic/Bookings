@@ -22,50 +22,59 @@
 
 ---
 
-## 🎯 КРИТИЧЕСКИЕ ЗАДАЧИ НА СЛЕДУЮЩУЮ НЕДЕЛЮ
+## 🎯 КРИТИЧЕСКИЕ ЗАДАЧИ - СТАТУС
 
-### 🔴 CRITICAL (Блокирует админку)
-1. **Добавить GET/:id endpoints** - Для получения отдельных записей
-   - [ ] GET /api/users/:id
-   - [ ] GET /api/resources/:id  
-   - [ ] GET /api/bookings/:id
-   - [ ] GET /api/payments/:id
-   - **Время:** 2 часа
-   - **Причина:** Нужны для edit форм в админке
+### 🟢 COMPLETED (Завершено)
+1. **Добавить GET/:id endpoints** ✅
+   - [x] GET /api/users/:id
+   - [x] GET /api/resources/:id  
+   - [x] GET /api/bookings/:id
+   - [x] GET /api/roles/:id
+   - [x] GET /api/payments/:id
+   - [x] GET /api/logs/:id
+   - **Статус:** Полностью реализовано в `api.js`
 
-2. **Добавить PUT/:id endpoints** - Для редактирования записей
-   - [ ] PUT /api/users/:id
-   - [ ] PUT /api/resources/:id
-   - [ ] PUT /api/bookings/:id
-   - [ ] PUT /api/payments/:id
-   - **Время:** 3-4 часа
-   - **Причина:** Админка требует функцию редактирования
+2. **Добавить PATCH/:id endpoints** ✅
+   - [x] PATCH /api/users/:id (с validateRegister)
+   - [x] PATCH /api/resources/:id (с validateResource)
+   - [x] PATCH /api/bookings/:id (с validateBooking)
+   - [x] PATCH /api/roles/:id
+   - [x] PATCH /api/payments/:id
+   - [x] PATCH /api/logs/:id
+   - **Статус:** Полностью реализовано в `api.js`
 
-3. **Валидация входных данных** - Middleware валидаторы
-   - [ ] Email валидация
-   - [ ] Пароль валидация
-   - [ ] Дата/время валидация
-   - [ ] Цена валидация
+### 🔴 CRITICAL (В процессе)
+3. **Валидация входных данных** - Применить к POST
+   - [x] Модуль `middleware/validators.js` создан
+   - [x] Email/пароль/цена/даты валидация готова
+   - [ ] Применить к POST /api/users (server.js)
+   - [ ] Применить к POST /api/resources (server.js)
+   - [ ] Применить к POST /api/bookings (server.js)
+   - **Время:** 1-2 часа
+   - **Статус:** Частичная (используется в PATCH)
+
+4. **Обработка ошибок** - Унифицировать на ApiError
+   - [x] ApiError класс создан
+   - [x] errorHandler middleware подключён
+   - [ ] Рефакторинг endpoints на throw new ApiError()
+   - [ ] Логирование ошибок в БД (опционально)
    - **Время:** 2-3 часа
-   - **Статус:** Частичная (есть проверки в endpoints, нужна централизация)
-
-4. **Обработка ошибок** - Centralized error handler
-   - [ ] ApiError класс
-   - [ ] Error middleware
-   - [ ] Логирование ошибок в БД
-   - **Время:** 2-3 часа
-   - **Статус:** Есть базовые try-catch, нужна унификация
+   - **Статус:** Инфраструктура готова, нужен рефакторинг
 
 ### 🟠 HIGH (На этой неделе)
-5. [ ] Функционал редактирования в админке (edit modals)
+5. [ ] Ролевая авторизация (requireRole middleware)
+   - **Время:** 1-2 часа
+6. [ ] Rate limiting для /api/login
+   - **Время:** 0.5-1 часа
+7. [ ] Функционал редактирования в админке (edit modals)
    - **Время:** 3-4 часа
-6. [ ] Unit тесты для auth и CRUD (Jest)
-   - **Время:** 4-6 часов
 
 ### 🟡 MEDIUM (На следующей неделе)
-7. [ ] Пагинация и фильтры в админке
-   - **Время:** 3-4 часа
-8. [ ] Stripe интеграция для платежей
+8. [ ] Пагинация и фильтры (limit/offset/q)
+   - **Время:** 1-2 часа
+9. [ ] Unit тесты для auth и CRUD (Jest)
+   - **Время:** 4-6 часов
+10. [ ] Stripe интеграция для платежей
    - **Время:** 4-6 часов
 
 ---

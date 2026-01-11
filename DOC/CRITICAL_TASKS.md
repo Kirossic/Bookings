@@ -67,10 +67,10 @@ curl -s -X POST http://localhost:3000/api/bookings \
 ```
 
 **Чек-лист:**
-- [ ] Применить к POST /api/users (server.js)
-- [ ] Применить к POST /api/resources (server.js)
-- [ ] Применить к POST /api/bookings (server.js)
-- [ ] Протестировать негативные сценарии
+- [✅] Применить к POST /api/users (server.js)
+- [✅] Применить к POST /api/resources (server.js)
+- [✅] Применить к POST /api/bookings (server.js)
+- [✅] Протестировать негативные сценарии
 
 ---
 
