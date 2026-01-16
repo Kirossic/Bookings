@@ -131,23 +131,39 @@ function showAddForm(sectionId, apiUrl, columns) {
         e.preventDefault();
         const form = e.target;
         const body = {};
+        
         columns.forEach(col => {
             if (col === 'id' || col === 'created_at') return;
-            body[col] = form[col].value;
+            const value = form.elements[col]?.value;
+            if (value) {
+                body[col] = value;
+            }
         });
+        
+        console.log('Отправляем данные:', body);
+        console.log('URL:', apiUrl);
+        console.log('sectionId:', sectionId);
+        
         try {
             const res = await auth.authFetch(apiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
             });
-            if (!res.ok) throw new Error('Ошибка добавления') && console.log(res);
+            
+            console.log('Ответ статус:', res.status);
+            const responseData = await res.json();
+            console.log('Ответ данные:', responseData);
+            
+            if (!res.ok) {
+                throw new Error(`Ошибка добавления: ${responseData.error || res.statusText}`);
+            }
+            
             alert('Запись добавлена');
             loadTable(sectionId, apiUrl, columns);
         } catch (err) {
-            alert('Ошибка при добавлении');
-            console.log(err);
-            
+            alert('Ошибка при добавлении: ' + err.message);
+            console.error(err);
         }
     };
 }

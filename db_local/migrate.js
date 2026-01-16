@@ -1,4 +1,5 @@
 const con = require('./db.js');
+const {createTrigger, deleteTriggers} = require('./trigger.js');
 
 async function migrate() {
     try {
@@ -71,6 +72,9 @@ async function migrate() {
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         `);
+
+        await deleteTriggers();
+        // await createTrigger();
 
         console.log('Миграции успешно применены!');
         process.exit(0);
