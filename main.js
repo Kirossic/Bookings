@@ -5,7 +5,7 @@ const con = require('./db_local/db.js');
 
 con.query('SELECT * FROM users')
   .then(result => {
-    console.log('Пользователи:', result.rows);
+    console.log('Последний пользователь:', result.rows[result.rows.length - 1]);
   })
   .catch(err => {
     console.error('Ошибка при получении пользователей', err);

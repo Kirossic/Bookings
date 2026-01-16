@@ -364,6 +364,5 @@ app.patch('/api/logs/:id', verifyToken, async (req, res, next) => {
     }
 });
 
-// Глобальный обработчик ошибок
 app.use(errorHandler);
 module.exports = app;
