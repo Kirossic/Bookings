@@ -129,9 +129,9 @@ curl -s http://localhost:3000/api/users | jq
 ```
 
 **Чек-лист:**
-- [ ] Заменить `res.status().json({ error })` на `throw new ApiError(...)`
-- [ ] Пройтись по основным маршрутам (`login`, `users`, `resources`, `bookings`)
-- [ ] Добавить тесты для 400/401/403/404/500
+- [✅] Заменить `res.status().json({ error })` на `throw new ApiError(...)`
+- [✅] Пройтись по основным маршрутам (`login`, `users`, `resources`, `bookings`)
+- [✅] Добавить тесты для 400/401/403/404/500
 
 ---
 

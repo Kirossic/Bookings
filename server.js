@@ -1,6 +1,4 @@
 const express = require('express');
-/*const app = express();
-app.use(express.json());*/
 const con = require('./db_local/db.js');
 const app = require('./api.js');
 const { hashPassword } = require('./backend/hashing.js');
@@ -26,12 +24,12 @@ app.use(express.static('public'));
 app.post('/api/users', validateRegister, async (req, res, next) => {
     const { name, email, password, role_id } = req.body;
     if (!name || !email || !password) {
-        throw new ApiError(400, 'Заполните все поля');
+        return res.status(400).json({ error: 'Заполните все поля' });
     }
     try {
         const check = await con.query('SELECT 1 FROM users WHERE email = $1', [email]);
         if (check.rowCount > 0) {
-            throw new ApiError(409, 'Пользователь с таким email уже существует');
+            return res.status(409).json({ error: 'Пользователь с таким email уже существует' });
         }
 
         const hashed = await hashPassword(password);
@@ -43,15 +41,14 @@ app.post('/api/users', validateRegister, async (req, res, next) => {
         res.status(201).json(result.rows[0]);
     } catch (error) {
         console.error('Ошибка при добавлении пользователя', error);
-        throw new ApiError(500, 'Ошибка сервера');
-        next(error);
+        next(new ApiError(500, 'Ошибка сервера'));
     }
 });
 
 app.post('/api/resources', verifyToken, validateResource, async (req, res, next) => {
     const { name, type, description, price_per_hour, status } = req.body;
     if (!name || !type || !description || !price_per_hour || !status) {
-        throw new ApiError(400, 'Заполните все поля');
+        return res.status(400).json({ error: 'Заполните все поля' });
     }
     try {
         const result = await con.query(
@@ -61,15 +58,14 @@ app.post('/api/resources', verifyToken, validateResource, async (req, res, next)
         res.status(201).json(result.rows[0]);
     } catch (error) {
         console.error('Ошибка при добавлении ресурса', error);
-        throw new ApiError(500, 'Ошибка сервера');
-        next(error);
+        next(new ApiError(500, 'Ошибка сервера'));
     }
 });
 
 app.post('/api/bookings', verifyToken, validateBooking, async (req, res, next) => {
     const { user_id, resource_id, start_time, end_time, status } = req.body;
     if (!user_id || !resource_id || !start_time || !end_time || !status) {
-        throw new ApiError(400, 'Заполните все поля');
+        return res.status(400).json({ error: 'Заполните все поля' });
     }
     try {
         const result = await con.query(
@@ -79,8 +75,7 @@ app.post('/api/bookings', verifyToken, validateBooking, async (req, res, next) =
         res.status(201).json(result.rows[0]);
     } catch (error) {
         console.error('Ошибка при добавлении бронирования', error);
-        throw new ApiError(500, 'Ошибка сервера');
-        next(error);
+        next(new ApiError(500, 'Ошибка сервера'));
     }
 });
 
@@ -93,68 +88,88 @@ app.patch('/api/resources/:id', verifyToken, validateResource, async (req, res, 
             [status, id]
         );
         if (result.rowCount === 0) {
-            throw new ApiError(404, 'Ресурс не найден');
+            return res.status(404).json({ error: 'Ресурс не найден' });
         }
         res.json(result.rows[0]);
     } catch (error) {
-        throw new ApiError(500, 'Ошибка сервера');
-        next(error);
+        console.error('Ошибка при обновлении ресурса', error);
+        next(new ApiError(500, 'Ошибка сервера'));
     }
 });
 
 app.delete('/api/bookings/:id', verifyToken, async (req, res, next) => {
     const { id } = req.params;
     try {
-        con.query('UPDATE resources SET status = $1 WHERE id = (SELECT resource_id FROM bookings WHERE id = $2) RETURNING *', ['Свободен', id])
-            .then(result => {
-                console.log('Обновленный ресурс:', result.rows[0]);
-            })
-            .catch(err => {
-                console.error('Ошибка при обновлении ресурса', err);
-            });
+        const user = await con.query('SELECT role_id FROM users WHERE id = $1', [req.user.id]);
+        if (user.rowCount === 0 || user.rows[0].role_id !== 3) {
+            return res.status(403).json({ error: 'Нет прав для удаления этого бронирования' });
+        }
+
+        const booking = await con.query('SELECT resource_id FROM bookings WHERE id = $1', [id]);
+        if (booking.rowCount > 0) {
+            await con.query(
+                'UPDATE resources SET status = $1 WHERE id = $2',
+                ['Свободен', booking.rows[0].resource_id]
+            );
+        }
+
         const result = await con.query(
             'DELETE FROM bookings WHERE id = $1 RETURNING *',
             [id]
         );
         if (result.rowCount === 0) {
-            throw new ApiError(404, 'Бронирование не найдено');
+            return res.status(404).json({ error: 'Бронирование не найдено' });
         }
         res.json({ message: 'Бронирование удалено', booking: result.rows[0] });
     } catch (error) {
         console.error('Ошибка при удалении бронирования', error);
-        throw new ApiError(500, 'Ошибка сервера');
+        next(new ApiError(500, 'Ошибка сервера'));
     }
 });
 
-app.delete('/api/users/:id', verifyToken, async (req, res) => {
+app.delete('/api/users/:id', verifyToken, async (req, res, next) => {
     const { id } = req.params;
     try {
+        // Проверяем роль пользователя из req.user
+        const user = await con.query('SELECT role_id FROM users WHERE id = $1', [req.user.id]);
+        if (user.rowCount === 0 || user.rows[0].role_id !== 3) {
+            return res.status(403).json({ error: 'Нет прав для удаления этого пользователя' });
+        }
+
         const result = await con.query(
             'DELETE FROM users WHERE id = $1 RETURNING *',
             [id]
         );
         if (result.rowCount === 0) {
-            throw new ApiError(404, 'Пользователь не найден');
+            return res.status(404).json({ error: 'Пользователь не найден' });
         }
         res.json({ message: 'Пользователь удалён', user: result.rows[0] });
     } catch (error) {
-        throw new ApiError(500, 'Ошибка сервера');
+        console.error('Ошибка при удалении пользователя', error);
+        next(new ApiError(500, 'Ошибка сервера'));
     }
 });
 
-app.delete('/api/resources/:id', verifyToken, async (req, res) => {
+app.delete('/api/resources/:id', verifyToken, async (req, res, next) => {
     const { id } = req.params;
     try {
+        // Проверяем роль пользователя из req.user
+        const user = await con.query('SELECT role_id FROM users WHERE id = $1', [req.user.id]);
+        if (user.rowCount === 0 || user.rows[0].role_id !== 3) {
+            return res.status(403).json({ error: 'Нет прав для удаления этого ресурса' });
+        }
+
         const result = await con.query(
             'DELETE FROM resources WHERE id = $1 RETURNING *',
             [id]
         );
         if (result.rowCount === 0) {
-            throw new ApiError(404, 'Ресурс не найден');
+            return res.status(404).json({ error: 'Ресурс не найден' });
         }
         res.json({ message: 'Ресурс удалён', resource: result.rows[0] });
     } catch (error) {
-        throw new ApiError(500, 'Ошибка сервера');
+        console.error('Ошибка при удалении ресурса', error);
+        next(new ApiError(500, 'Ошибка сервера'));
     }
 });
 
