@@ -7,6 +7,7 @@ const verifyToken = require('./backend/Verify_Token.js');
 const { comparePassword } = require('./backend/hashing.js');
 const { validateRegister, validateResource, validateBooking } = require('./middleware/validators');
 const { errorHandler, ApiError } = require('./middleware/errorHandler.js');
+const { buildRead, buildUpdate, buildDelete } = require('./backend/api_constructor.js');
 
 
 app.post('/api/login', async (req, res) => {
@@ -121,9 +122,9 @@ app.get('/api/logs', verifyToken, async (req, res) => {
 app.get('/api/users/:id', verifyToken, async (req, res, next) => {
     const { id } = req.params;
     try {
-        const result = await con.query(
-            'SELECT id, name, email, role_id, created_at FROM users WHERE id = $1',
-            [id]
+        const result = await buildRead(
+            'users',
+            id
         );
         if (result.rowCount === 0) {
             throw new ApiError(404, 'Пользователь не найден');
@@ -138,9 +139,9 @@ app.get('/api/users/:id', verifyToken, async (req, res, next) => {
 app.get('/api/resources/:id', verifyToken, async (req, res, next) => {
     const { id } = req.params;
     try {
-        const result = await con.query(
-            'SELECT * FROM resources WHERE id = $1',
-            [id]
+        const result = await buildRead(
+            'resources',
+            id
         );
         if (result.rowCount === 0) {
             throw new ApiError(404, 'Ресурс не найден');
@@ -155,9 +156,9 @@ app.get('/api/resources/:id', verifyToken, async (req, res, next) => {
 app.get('/api/bookings/:id', verifyToken, async (req, res, next) => {
     const { id } = req.params;
     try {
-        const result = await con.query(
-            'SELECT * FROM bookings WHERE id = $1',
-            [id]
+        const result = await buildRead(
+            'bookings',
+            id
         );
         if (result.rowCount === 0) {
             throw new ApiError(404, 'Бронирование не найдено');
@@ -171,9 +172,9 @@ app.get('/api/bookings/:id', verifyToken, async (req, res, next) => {
 app.get('/api/roles/:id', verifyToken, async (req, res, next) => {
     const { id } = req.params;
     try {
-        const result = await con.query(
-            'SELECT * FROM roles WHERE id = $1',
-            [id]
+        const result = await buildRead(
+            'roles',
+            id
         );
         if (result.rowCount === 0) {
             throw new ApiError(404, 'Роль не найдена');
@@ -188,9 +189,9 @@ app.get('/api/roles/:id', verifyToken, async (req, res, next) => {
 app.get('/api/payments/:id', verifyToken, async (req, res, next) => {
     const { id } = req.params;
     try {
-        const result = await con.query(
-            'SELECT * FROM payments WHERE id = $1',
-            [id]
+        const result = await buildRead(
+            'payments',
+            id
         );
         if (result.rowCount === 0) {
             throw new ApiError(404, 'Платеж не найден');
@@ -205,9 +206,9 @@ app.get('/api/payments/:id', verifyToken, async (req, res, next) => {
 app.get('/api/logs/:id', verifyToken, async (req, res, next) => {
     const { id } = req.params;
     try {
-        const result = await con.query(
-            'SELECT * FROM logs WHERE id = $1',
-            [id]
+        const result = await buildRead(
+            'logs',
+            id
         );
         if (result.rowCount === 0) {
             throw new ApiError(404, 'Лог не найден');
@@ -226,9 +227,11 @@ app.patch('/api/users/:id', verifyToken, validateRegister, async (req, res, next
     }
 
     try {
-        const result = await con.query(
-            'UPDATE users SET name = $1, email = $2, role_id = $3 WHERE id = $4 RETURNING id, name, email, role_id, created_at',
-            [req.body.name, req.body.email, req.body.role_id, id]
+        const result = await buildUpdate(
+            'users',
+            id,
+            req.body,
+            ['name', 'email', 'password', 'role_id']
         );
         if (result.rowCount === 0) {
             throw new ApiError(404, 'Пользователь не найден');
@@ -243,39 +246,12 @@ app.patch('/api/users/:id', verifyToken, validateRegister, async (req, res, next
 app.patch('/api/resources/:id', verifyToken, validateResource, async (req, res, next) => {
     const { id } = req.params;
     try {
-        const updates = [];
-        const values = [];
-        let paramCount = 1;
-        
-        if (req.body.name !== undefined) {
-            updates.push(`name = $${paramCount++}`);
-            values.push(req.body.name);
-        }
-        if (req.body.description !== undefined) {
-            updates.push(`description = $${paramCount++}`);
-            values.push(req.body.description);
-        }
-        if (req.body.type !== undefined) {
-            updates.push(`type = $${paramCount++}`);
-            values.push(req.body.type);
-        }
-        if (req.body.status !== undefined) {
-            updates.push(`status = $${paramCount++}`);
-            values.push(req.body.status);
-        }
-        if (req.body.price_per_hour !== undefined) {
-            updates.push(`price_per_hour = $${paramCount++}`);
-            values.push(req.body.price_per_hour);
-        }
-        
-        if (updates.length === 0) {
-            throw new ApiError(400, 'Не указаны поля для обновления');
-        }
-        
-        values.push(id);
-        const query = `UPDATE resources SET ${updates.join(', ')} WHERE id = $${paramCount} RETURNING *`;
-        const result = await con.query(query, values);
-        
+        const result = await buildUpdate(
+            'resources',
+            id,
+            req.body,
+            ['name', 'description', 'type', 'status', 'price_per_hour']
+        );
         if (result.rowCount === 0) {
             throw new ApiError(404, 'Ресурс не найден');
         }
@@ -290,18 +266,21 @@ app.patch('/api/resources/:id', verifyToken, validateResource, async (req, res, 
 app.patch('/api/bookings/:id', verifyToken, validateBooking, async (req, res, next) => {
     const { id } = req.params;
     try {
-        await con.query(
-            'UPDATE resources SET status = $1 WHERE id = $2 RETURNING *', [req.body.status, req.body.resource_id])
-            .then(() => {
-                console.log('Ресурс успешно обновлен внутри бронирования');
-            })
-            .catch(error => {
-                console.error('Ошибка при обновлении ресурса внутри бронирования:', error);
-            });
+        const resourceUpdate = await buildUpdate(
+            'resources',
+            req.body.resource_id,
+            { status: req.body.status },
+            ['status']
+        );
+        if (resourceUpdate.rowCount === 0) {
+            throw new ApiError(400, 'Не указаны поля для обновления');
+        }
 
-        const result = await con.query(
-            'UPDATE bookings SET user_id = $1, resource_id = $2, start_time = $3, end_time = $4, status = $5 WHERE id = $6 RETURNING *',
-            [req.body.user_id, req.body.resource_id, req.body.start_time, req.body.end_time, req.body.status, id]
+        const result = await buildUpdate(
+            'bookings',
+            id,
+            req.body,
+            ['user_id', 'resource_id', 'start_time', 'end_time', 'status']
         );
         if (result.rowCount === 0) {
             throw new ApiError(404, 'Бронирование не найдено');
@@ -316,9 +295,11 @@ app.patch('/api/bookings/:id', verifyToken, validateBooking, async (req, res, ne
 app.patch('/api/roles/:id', verifyToken, async (req, res, next) => {
     const { id } = req.params;
     try {
-        const result = await con.query(
-            'UPDATE roles SET name = $1 WHERE id = $2 RETURNING *',
-            [req.body.name, id]
+        const result = await buildUpdate(
+            'roles',
+            id,
+            req.body,
+            ['name']
         );
         if (result.rowCount === 0) {
             throw new ApiError(404, 'Роль не найдена');
@@ -333,9 +314,11 @@ app.patch('/api/roles/:id', verifyToken, async (req, res, next) => {
 app.patch('/api/payments/:id', verifyToken, async (req, res, next) => {
     const { id } = req.params;
     try {
-        const result = await con.query(
-            'UPDATE payments SET booking_id = $1, amount = $2, status = $3, payment_method = $4 WHERE id = $5 RETURNING *',
-            [req.body.booking_id, req.body.amount, req.body.status, req.body.payment_method, id]
+        const result = await buildUpdate(
+            'payments',
+            id,
+            req.body,
+            ['booking_id', 'amount', 'status', 'payment_method', 'created_at']
         );
         if (result.rowCount === 0) {
             throw new ApiError(404, 'Платеж не найден');
@@ -350,9 +333,11 @@ app.patch('/api/payments/:id', verifyToken, async (req, res, next) => {
 app.patch('/api/logs/:id', verifyToken, async (req, res, next) => {
     const { id } = req.params;
     try {
-        const result = await con.query(
-            'UPDATE logs SET user_id = $1, resource_id = $2, start_time = $3, end_time = $4, status = $5 WHERE id = $6 RETURNING *',
-            [req.body.user_id, req.body.resource_id, req.body.start_time, req.body.end_time, req.body.status, id]
+        const result = await buildUpdate(
+            'logs',
+            id,
+            req.body,
+            ['user_id', 'resource_id', 'start_time', 'end_time', 'status']
         );
         if (result.rowCount === 0) {
             throw new ApiError(404, 'Лог не найден');
@@ -361,6 +346,105 @@ app.patch('/api/logs/:id', verifyToken, async (req, res, next) => {
     } catch (error) {
         next(error);
         throw new ApiError(500, 'Ошибка сервера');
+    }
+});
+
+app.delete('/api/bookings/:id', verifyToken, async (req, res, next) => {
+    const { id } = req.params;
+    try {
+        const user = await con.query('SELECT role_id FROM users WHERE id = $1', [req.user.id]);
+        if (user.rowCount === 0 || user.rows[0].role_id !== 3) {
+            return res.status(403).json({ error: 'Нет прав для удаления этого бронирования' });
+        }
+
+        const booking = await con.query('SELECT resource_id FROM bookings WHERE id = $1', [id]);
+        if (booking.rowCount > 0) {
+            await con.query(
+                'UPDATE resources SET status = $1 WHERE id = $2',
+                ['Свободен', booking.rows[0].resource_id]
+            );
+        }
+
+        const result = await buildDelete(
+            'bookings',
+            id
+        );
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Бронирование не найдено' });
+        }
+        res.json({ message: 'Бронирование удалено', booking: result.rows[0] });
+    } catch (error) {
+        console.error('Ошибка при удалении бронирования', error);
+        next(new ApiError(500, 'Ошибка сервера'));
+    }
+});
+
+app.delete('/api/users/:id', verifyToken, async (req, res, next) => {
+    const { id } = req.params;
+    try {
+        // Проверяем роль пользователя из req.user
+        const user = await con.query('SELECT role_id FROM users WHERE id = $1', [req.user.id]);
+        if (user.rowCount === 0 || user.rows[0].role_id !== 3) {
+            return res.status(403).json({ error: 'Нет прав для удаления этого пользователя' });
+        }
+
+        const result = await buildDelete(
+            'users',
+            id
+        );
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Пользователь не найден' });
+        }
+        res.json({ message: 'Пользователь удалён', user: result.rows[0] });
+    } catch (error) {
+        console.error('Ошибка при удалении пользователя', error);
+        next(new ApiError(500, 'Ошибка сервера'));
+    }
+});
+
+app.delete('/api/resources/:id', verifyToken, async (req, res, next) => {
+    const { id } = req.params;
+    try {
+        // Проверяем роль пользователя из req.user
+        const user = await con.query('SELECT role_id FROM users WHERE id = $1', [req.user.id]);
+        if (user.rowCount === 0 || user.rows[0].role_id !== 3) {
+            return res.status(403).json({ error: 'Нет прав для удаления этого ресурса' });
+        }
+
+        const result = await buildDelete(
+            'resources',
+            id
+        );
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Ресурс не найден' });
+        }
+        res.json({ message: 'Ресурс удалён', resource: result.rows[0] });
+    } catch (error) {
+        console.error('Ошибка при удалении ресурса', error);
+        next(new ApiError(500, 'Ошибка сервера'));
+    }
+});
+
+app.delete('/api/roles/:id', verifyToken, async (req, res, next) => {
+    const { id } = req.params;
+    try {
+        // Проверяем роль пользователя из req.user
+        const user = await con.query('SELECT role_id FROM users WHERE id = $1', [req.user.id]);
+        if (user.rowCount === 0 || user.rows[0].role_id !== 3) {
+            return res.status(403).json({ error: 'Нет прав для удаления этой роли' });
+        }
+
+        const result = await buildDelete(
+            'roles',
+            id
+        );
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Роль не найдена' });
+        }
+        res.json({ message: 'Роль удалёна', role: result.rows[0] });
+    } catch (error) {
+        console.error('Ошибка при удалении роли', error);
+        next(new ApiError(500, 'Ошибка сервера'));
     }
 });
 
