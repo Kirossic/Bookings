@@ -290,7 +290,7 @@ app.patch('/api/resources/:id', verifyToken, validateResource, async (req, res, 
 app.patch('/api/bookings/:id', verifyToken, validateBooking, async (req, res, next) => {
     const { id } = req.params;
     try {
-        con.query(
+        await con.query(
             'UPDATE resources SET status = $1 WHERE id = $2 RETURNING *', [req.body.status, req.body.resource_id])
             .then(() => {
                 console.log('Ресурс успешно обновлен внутри бронирования');

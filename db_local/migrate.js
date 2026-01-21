@@ -73,7 +73,7 @@ async function migrate() {
             );
         `);
 
-        await deleteTriggers();
+        // await deleteTriggers();
         // await createTrigger();
 
         console.log('Миграции успешно применены!');

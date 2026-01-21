@@ -68,13 +68,18 @@ const log = async () => {
         bookButton.style.display = 'none'
 
         elements.booking_btn.addEventListener('click', async () => {
-        const email = elements.user_email.value;
-        const start_time = elements.check_in.value;
-        const end_time = elements.check_out.value;
-        const user_id = currentUser ? currentUser.id : null;
-        const resource_id = resource.id;
-        const resource_status = resource.status;
+            const email = elements.user_email.value;
+            const start_time = elements.check_in.value;
+            const end_time = elements.check_out.value;
+            const user_id = currentUser ? currentUser.id : null;
+            const resource_id = resource.id;
+            const resource_status = resource.status;
 
+        if (new Date(start_time) >= new Date(end_time)) {
+            alert('Дата выезда должна быть позже даты заезда');
+            location.reload();
+            return;
+        }
         if (!email || !start_time || !end_time) {
             alert('Заполните все поля');
             location.reload();
@@ -111,8 +116,8 @@ const log = async () => {
             const updatedResource = await req.json();
             console.log('Ресурс обновлен:', updatedResource);
         } else {
+            alert('Ошибка при обновлении ресурса');
             console.error('Ошибка при обновлении ресурса');
-            
         }
         if (res.ok) {
             const newBooking = await res.json();
@@ -126,8 +131,8 @@ const log = async () => {
         }
     location.reload();
     })
-
-    console.log(resources);
+    
     });
 }
+
 log();
