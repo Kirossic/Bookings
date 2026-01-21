@@ -1,6 +1,6 @@
 const con = require('./db.js');
 const triggerUsers = `
-CREATE OR REPLACE FUNCTION log_user_deletion()
+CREATE OR REPLACE FUNCTION user_logs_function
 RETURNS TRIGGER AS $$
 BEGIN
     INSERT INTO logs (user_id, action, details, created_at)
