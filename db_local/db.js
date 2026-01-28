@@ -2,10 +2,10 @@ const {Client} = require('pg');
 
 const con = new Client({
     host: process.env.DB_HOST || 'localhost',
-    user: "postgres",
-    port: 5432,
-    password: "12345678",
-    database: "db_bronare"
+    user: process.env.DB_USER || "postgres",
+    port: parseInt(process.env.DB_PORT || '5432', 10),
+    password: process.env.DB_PASSWORD || "12345678",
+    database: process.env.DB_NAME || "db_bronare"
 });
 con.connect().then(() => {
     console.log("Connected to the database");

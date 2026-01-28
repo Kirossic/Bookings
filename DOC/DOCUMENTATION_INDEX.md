@@ -9,7 +9,7 @@
 ## 🚀 БЫСТРЫЙ СТАРТ
 
 ### Если вы новичок в проекте:
-1. Прочитайте [README.md](README.md) — общее описание
+1. Прочитайте [README.md](../README.md) — общее описание
 2. Посмотрите [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) — структура проекта
 3. Откройте [FINAL_REPORT.md](FINAL_REPORT.md) — актуальный статус
 
