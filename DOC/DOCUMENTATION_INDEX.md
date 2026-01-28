@@ -71,6 +71,7 @@
 
 • [JWT_AUTH_README.md](JWT_AUTH_README.md): Полная документация JWT
 • [JWT_QUICKSTART.md](JWT_QUICKSTART.md): Быстрая справка с примерами
+• [**SECURITY_PASSWORD_CLEANUP.md**](SECURITY_PASSWORD_CLEANUP.md): 🔴 Удаление паролей из истории Git
 
 **СОДЕРЖАТ:**
 - Как работает JWT в проекте
@@ -78,6 +79,7 @@
 - Список всех endpoints с требованиями к авторизации
 - Обработка 401/403 ошибок
 - Расшифровка токена
+- **Инструкции по очистке истории Git от паролей**
 
 ---
 
@@ -122,8 +124,9 @@
 │  └─ ERD_DIAGRAM.md           - Диаграмма БД
 │
 └─ 🔐 БЕЗОПАСНОСТЬ
-   ├─ JWT_AUTH_README.md       - Полная документация
-   └─ JWT_QUICKSTART.md        - Быстрая справка
+   ├─ JWT_AUTH_README.md           - Полная документация
+   ├─ JWT_QUICKSTART.md            - Быстрая справка
+   └─ SECURITY_PASSWORD_CLEANUP.md - Удаление паролей из Git
 ```
 
 ---
