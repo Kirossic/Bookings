@@ -1,5 +1,6 @@
 const con = require('./db.js');
 const {createTrigger, deleteTriggers} = require('./trigger.js');
+const { startTestDB, startTestUnit } = require('./startTestDB.js');
 
 async function migrate() {
     try {
@@ -77,6 +78,11 @@ async function migrate() {
         // await createTrigger();
 
         console.log('Миграции успешно применены!');
+
+        // Заполнить тестовыми данными (роли и пользователи)
+        // await startTestDB();
+        // await startTestUnit();
+
         process.exit(0);
     } catch (err) {
         console.error('Ошибка миграции:', err);

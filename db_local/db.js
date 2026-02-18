@@ -9,27 +9,36 @@ const con = new Client({
 });
 con.connect().then(() => {
     console.log("Connected to the database");
+    
+    // Удаление дублей: оставить минимальный id для каждой пары user_id, resource_id
+    // Проверяем существование таблицы перед удалением дубликатов
+    con.query(`
+        SELECT EXISTS (
+            SELECT FROM information_schema.tables 
+            WHERE table_schema = 'public' 
+            AND table_name = 'bookings'
+        )
+    `).then(result => {
+        if (result.rows[0].exists) {
+            return con.query(`
+                DELETE FROM bookings
+                WHERE id NOT IN (
+                    SELECT min_id FROM (
+                        SELECT MIN(id) as min_id
+                        FROM bookings
+                        GROUP BY user_id, resource_id
+                    ) AS keep
+                )
+            `);
+        }
+    }).then(() => {
+        console.log('Duplicate bookings check completed');
+    }).catch(err => {
+        console.error('Error checking/removing duplicate bookings', err);
+    });
 }).catch(err => {
     console.error('Connection error', err.stack);
 });
-
-// Удаление дублей: оставить минимальный id для каждой пары user_id, resource_id
-con.query(`
-    DELETE FROM bookings
-    WHERE id NOT IN (
-        SELECT min_id FROM (
-            SELECT MIN(id) as min_id
-            FROM bookings
-            GROUP BY user_id, resource_id
-        ) AS keep
-    )
-`)
-  .then(() => {
-    console.log('Duplicate bookings removed');
-  })
-  .catch(err => {
-    console.error('Error removing duplicate bookings', err);
-  });
 
 con._connected = true;
 
