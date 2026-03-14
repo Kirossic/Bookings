@@ -67,7 +67,7 @@ async function migrate() {
         await con.query(`
             CREATE TABLE IF NOT EXISTS logs (
                 id SERIAL PRIMARY KEY,
-                user_id INTEGER REFERENCES users(id),
+                user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
                 action VARCHAR(100),
                 details TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -75,7 +75,7 @@ async function migrate() {
         `);
 
         // await deleteTriggers();
-        // await createTrigger();
+        await createTrigger();
 
         console.log('Миграции успешно применены!');
 
