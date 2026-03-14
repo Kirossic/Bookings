@@ -7,8 +7,7 @@
     "server": "node server.js",
     "api": "node api.js",
     "dev": "nodemon main.js",
-    "migrate": "node db/migrate.js",
-    "trigger": "node db/trigger.js"
+    "migrate": "node db/migrate.js"
   },
   "author": "",
   "license": "ISC",

@@ -40,10 +40,10 @@ DB_NAME=db_bronare
 JWT_SECRET=789456123  # дефолт, переопредели в .env
 ```
 
-Файл [db_local/db.js](../db_local/db.js) автоматом подключается при импорте.
+Файл [db_local/db.js](../db/db.js) автоматом подключается при импорте.
 
 ### Миграции
-Запускай `npm run migrate` для создания таблиц. Файл [db_local/migrate.js](../db_local/migrate.js) содержит все CREATE TABLE с IF NOT EXISTS.
+Запускай `npm run migrate` для создания таблиц. Файл [db_local/migrate.js](../db/migrate.js) содержит все CREATE TABLE с IF NOT EXISTS.
 
 ## 🔑 Паттерны аутентификации
 
@@ -155,8 +155,8 @@ Middleware в [middleware/validators.js](../middleware/validators.js):
 - **Не используй ORM** - прямые SQL запросы через `con.query()`
 - **Хеширование**: всегда через [backend/hashing.js](../backend/hashing.js), никогда plaintext
 - **Новые endpoints**: добавляй в [api.js](../api.js), импортируй в [server.js](../server.js)
-- **Дубликаты в bookings**: файл [db_local/db.js](../db_local/db.js) при старте удаляет дубли по (user_id, resource_id)
-- **Триггеры БД**: см. [db_local/trigger.js](../db_local/trigger.js) (закомментированы в миграции)
+- **Дубликаты в bookings**: файл [db_local/db.js](../db/db.js) при старте удаляет дубли по (user_id, resource_id)
+- **Триггеры БД**: см. [db_local/trigger.js](../db/trigger.js) (закомментированы в миграции)
 
 ## 🐛 Отладка
 
