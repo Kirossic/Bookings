@@ -1,4 +1,4 @@
-const con = require('../db_local/db.js');
+const con = require('../db/db.js');
 
 async function buildRead(table, id) {
     const query = `SELECT * FROM ${table} WHERE id = $1`;

@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 app.use(express.json());
-const con = require('./db_local/db.js');
+const con = require('./db/db.js');
 const jwt = require('jsonwebtoken');
 const verifyToken = require('./backend/Verify_Token.js');
 const { comparePassword } = require('./backend/hashing.js');
