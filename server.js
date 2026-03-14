@@ -1,5 +1,5 @@
 const express = require('express');
-const con = require('./db_local/db.js');
+const con = require('./db/db.js');
 const app = require('./api.js');
 const { hashPassword } = require('./backend/hashing.js');
 const verifyToken = require('./backend/Verify_Token.js');
@@ -12,7 +12,15 @@ app.get('/', (req, res) => {
 
 app.listen(3000, () => {
     console.log('Сервер запущен на порту 3000');
-    console.log('Для начала тестирования: http://localhost:3000/index');
+    console.log('|_______________________|_________________________________________________|');
+    console.log('|Стартовая страница:    |http://localhost:3000/index                      |');
+    console.log('|-----------------------|-------------------------------------------------|');
+    console.log('|Главная страница:      |http://localhost:3000/Buking/home/index.html     |');
+    console.log('|-----------------------|-------------------------------------------------|');
+    console.log('|sign_in:               |http://localhost:3000/Buking/sign_in/index.html  |');
+    console.log('|-----------------------|-------------------------------------------------|');
+    console.log('|Админ понель:          |http://localhost:3000/admin/admin.html           | ');
+    console.log('|_______________________|_________________________________________________|');
 });
 
 app.get('/index', (req, res) => {
