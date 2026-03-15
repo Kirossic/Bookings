@@ -3,11 +3,8 @@ const app = express();
 app.use(express.json());
 const con = require('../../db/db.js');
 const jwt = require('jsonwebtoken');
-const verifyToken = require('../verifyToken.js');
 const { comparePassword } = require('../hashing.js');
-const { validateRegister, validateResource, validateBooking } = require('../../middleware/validators.js');
 const { errorHandler, ApiError } = require('../../middleware/errorHandler.js');
-const { buildRead, buildUpdate, buildDelete } = require('../apiConstructor.js');
 
 const indexRouter = require('./routes/index.js');
 app.use('/api', indexRouter);
