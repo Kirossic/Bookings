@@ -550,7 +550,7 @@ app.post('/api/auth/login', async (req, res) => {
 ├── 📄 package.json              ✅ Все зависимости
 ├── backend/
 │   ├── 📄 hashing.js            ✅ bcryptjs функции
-│   └── 📄 Verify_Token.js        ✅ JWT middleware
+│   └── 📄 verifyToken.js        ✅ JWT middleware
 ├── db_local/
 │   ├── 📄 db.js                 ✅ PostgreSQL connection
 │   └── 📄 migrate.js            ⏳ Миграции (не используется)

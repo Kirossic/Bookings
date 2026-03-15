@@ -10,7 +10,7 @@
 
 #### Модули
 - **`backend/hashing.js`** - утилиты для хеширования паролей (bcryptjs)
-- **`backend/Verify_Token.js`** - middleware для проверки JWT токенов
+- **`backend/verifyToken.js`** - middleware для проверки JWT токенов
 - **`api.js`** - API endpoints с защитой токенами
 - **`server.js`** - основные маршруты регистрации и управления
 

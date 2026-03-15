@@ -1,12 +1,12 @@
 {
   "name": "proekt",
   "version": "1.0.0",
-  "main": "main.js",
+  "main": "backend/src/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "node server.js",
-    "api": "node api.js",
-    "dev": "nodemon main.js",
+    "dev": "nodemon backend/src/server.js",
+    "start": "nodemon backend/src/server.js",
+    "server": "node backend/src/server.js",
+    "api": "node backend/src/api.js",
     "migrate": "node db/migrate.js"
   },
   "author": "",

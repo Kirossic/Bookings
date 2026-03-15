@@ -210,7 +210,7 @@ FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 const express = require('express');
 const router = express.Router();
 const db = require('../db/db');
-const { verifyToken } = require('../backend/Verify_Token');
+const { verifyToken } = require('../backend/verifyToken');
 const { ApiError } = require('../middleware/errorHandler');
 
 // GET /api/example - получить все записи (защищено)

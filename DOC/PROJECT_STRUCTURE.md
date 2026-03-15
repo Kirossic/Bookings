@@ -12,7 +12,7 @@ Bukings/
 ├── Untitled.sql
 ├── backend/
 │   ├── hashing.js
-│   └── Verify_Token.js
+│   └── verifyToken.js
 ├── db_local/
 │   ├── db.js
 │   └── migrate.js
@@ -62,7 +62,7 @@ Bukings/
 
 - server.js: ✅ работает, требуется централизованная обработка ошибок
 - api.js: ✅ базовые GET/POST/DELETE реализованы; ⏳ добавить GET/:id и PUT/:id
-- backend/Verify_Token.js: ✅ JWT проверка
+- backend/verifyToken.js: ✅ JWT проверка
 - backend/hashing.js: ✅ хеширование паролей (bcryptjs)
 - public/js/auth.js: ✅ модуль аутентификации
 - public/admin/*: ✅ базовая админка (Vanilla JS), ⏳ требуется редактирование/фильтры/пагинация
@@ -154,7 +154,7 @@ hashPassword(password)      // Создать хеш
 comparePassword(password, hash) // Проверить пароль
 ```
 
-#### `Verify_Token.js` ✅
+#### `verifyToken.js` ✅
 ```javascript
 // Middleware для проверки JWT
 verifyToken(req, res, next) // Проверить токен в Authorization header
@@ -266,7 +266,7 @@ auth.authFetch(url, options)       // Fetch с токеном
 │           - logging                             │          │
 │                                                  │          │
 │  backend/hashing.js                             │          │
-│  backend/Verify_Token.js                        │          │
+│  backend/verifyToken.js                        │          │
 │                                                  │          │
 └──────────────────────┬──────────────────────────┼───────────┘
                        │ SQL запросы  │ очереди

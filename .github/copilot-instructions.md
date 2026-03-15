@@ -8,7 +8,7 @@
 - **server.js** - entry point, объединяет api.js и статику
 - **api.js** - REST API с JWT auth, экспортирует Express app
 - **db_local/** - PostgreSQL подключение и миграции
-- **backend/** - утилиты (hashing, JWT verify, api_constructor)
+- **backend/** - утилиты (hashing, JWT verify, apiConstructor)
 - **public/** - статичный frontend (Vanilla JS, без фреймворков)
 
 ### Модель данных
@@ -54,7 +54,7 @@ JWT_SECRET=789456123  # дефолт, переопредели в .env
 
 ### Backend middleware
 ```javascript
-const verifyToken = require('./backend/Verify_Token.js');
+const verifyToken = require('./backend/verifyToken.js');
 app.get('/api/protected', verifyToken, handler); // req.user доступен
 ```
 
@@ -83,7 +83,7 @@ const res = await auth.authFetch('/api/bookings', { method: 'POST', ... });
 ```
 
 ### Универсальные CRUD-хелперы
-Файл [backend/api_constructor.js](../backend/api_constructor.js) содержит:
+Файл [backend/apiConstructor.js](../backend/apiConstructor.js) содержит:
 ```javascript
 buildRead(table, id)           // SELECT * FROM table WHERE id = $1
 buildUpdate(table, id, data, allowed) // UPDATE с белым списком полей
@@ -92,7 +92,7 @@ buildDelete(table, id)         // DELETE FROM table WHERE id = $1
 
 **Пример использования**:
 ```javascript
-const { buildUpdate } = require('./backend/api_constructor.js');
+const { buildUpdate } = require('./backend/apiConstructor.js');
 app.put('/api/users/:id', async (req, res) => {
     const result = await buildUpdate('users', req.params.id, req.body, ['name', 'email']);
     res.json(result.rows[0]);
@@ -145,7 +145,7 @@ Middleware в [middleware/validators.js](../middleware/validators.js):
 - [CRITICAL_TASKS.md](../DOC/CRITICAL_TASKS.md) - незавершённые задачи
 
 ### Незавершённые фичи (см. DOC/PROJECT_STRUCTURE.md)
-- PUT endpoints для редактирования (частично есть через api_constructor)
+- PUT endpoints для редактирования (частично есть через apiConstructor)
 - Пагинация в админке
 - Stripe интеграция для платежей
 - Unit/integration тесты

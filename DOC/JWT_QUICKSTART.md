@@ -17,7 +17,7 @@
 
 ### Backend
 - `backend/hashing.js` - хеширование паролей (bcryptjs)
-- `backend/Verify_Token.js` - middleware проверки токенов
+- `backend/verifyToken.js` - middleware проверки токенов
 - `api.js` - обновлён: GET/:id, PATCH/:id, DELETE, валидаторы, errorHandler
 - `server.js` - POST эндпоинты (пользователи, ресурсы, бронирования)
 - `middleware/validators.js` - валидация email, пароль, цены, дат
