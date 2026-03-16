@@ -26,25 +26,6 @@ router.post('/', verifyToken, validateResource, async (req, res, next) => {
     }
 });
 
-// PATCH /api/resources/:id
-router.patch('/:id', verifyToken, validateResource, async (req, res, next) => {
-    const { id } = req.params;
-    const { status } = req.body;
-    try {
-        const result = await con.query(
-            'UPDATE resources SET status = $1 WHERE id = $2 RETURNING *',
-            [status, id]
-        );
-        if (result.rowCount === 0) {
-            return res.status(404).json({ error: 'Ресурс не найден' });
-        }
-        res.json(result.rows[0]);
-    } catch (error) {
-        console.error('Ошибка при обновлении ресурса', error);
-        next(new ApiError(500, 'Ошибка сервера'));
-    }
-});
-
 // api.js
 // GET /api/resources
 router.get('/', async (req, res) => {

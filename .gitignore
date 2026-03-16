@@ -56,3 +56,7 @@ build/
 *.swp
 *.swo
 tempFile.md
+
+# Doc
+DOC/
+.github/
