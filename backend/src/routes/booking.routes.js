@@ -10,18 +10,33 @@ const { buildRead, buildUpdate, buildDelete } = require('../../apiConstructor.js
 // server.js
 // POST /api/bookings
 router.post('/', verifyToken, validateBooking, async (req, res, next) => {
-    const { user_id, resource_id, start_time, end_time, status } = req.body;
-    if (!user_id || !resource_id || !start_time || !end_time || !status) {
-        return res.status(400).json({ error: 'Заполните все поля' });
-    }
+    const userId = req.user.id;
+    const { resource_id, start_time, end_time, status } = req.body;
+
     try {
-        const result = await con.query(
-            'INSERT INTO bookings (user_id, resource_id, start_time, end_time, status, created_at) VALUES ($1, $2, $3, $4, $5, NOW()) RETURNING *',
-            [user_id, resource_id, start_time, end_time, status]
+        const conflict = await con.query(
+            `SELECT id FROM bookings
+             WHERE resource_id = $1
+               AND status != 'cancelled'
+               AND $2 < end_time
+               AND $3 > start_time
+             LIMIT 1`,
+            [resource_id, start_time, end_time]
         );
+
+        if (conflict.rowCount > 0) {
+            return res.status(409).json({ error: 'Ресурс уже забронирован на это время' });
+        }
+
+        const result = await con.query(
+            `INSERT INTO bookings (user_id, resource_id, start_time, end_time, status, created_at)
+             VALUES ($1, $2, $3, $4, $5, NOW())
+             RETURNING *`,
+            [userId, resource_id, start_time, end_time, status]
+        );
+
         res.status(201).json(result.rows[0]);
     } catch (error) {
-        console.error('Ошибка при добавлении бронирования', error);
         next(new ApiError(500, 'Ошибка сервера'));
     }
 });
