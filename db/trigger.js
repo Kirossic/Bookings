@@ -60,11 +60,106 @@ FOR EACH ROW
 EXECUTE FUNCTION log_booking();
 `;
 
+const triggerResources = `
+CREATE OR REPLACE FUNCTION log_resources()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'DELETE' THEN
+        INSERT INTO logs (user_id, action, details, created_at)
+        VALUES (NULL, 'DELETE', 'User deleted. user_id=' || OLD.id, NOW());
+        RETURN OLD;
+    ELSIF TG_OP = 'INSERT' THEN
+        INSERT INTO logs (user_id, action, details, created_at)
+        VALUES (NEW.id, 'INSERT', 'User created', NOW());
+        RETURN NEW;
+    ELSIF TG_OP = 'UPDATE' THEN
+        INSERT INTO logs (user_id, action, details, created_at)
+        VALUES (NEW.id, 'UPDATE', 'User updated', NOW());
+        RETURN NEW;
+    END IF;
+
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS resources_trigger ON resources;
+
+CREATE TRIGGER resources_trigger
+AFTER INSERT OR UPDATE OR DELETE ON resources
+FOR EACH ROW
+EXECUTE FUNCTION log_resources()
+`;
+
+const triggerPayments = `
+CREATE OR REPLACE FUNCTION log_payments()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'DELETE' THEN
+        INSERT INTO logs (user_id, action, details, created_at)
+        VALUES (NULL, 'DELETE', 'User deleted. user_id=' || OLD.id, NOW());
+        RETURN OLD;
+    ELSIF TG_OP = 'INSERT' THEN
+        INSERT INTO logs (user_id, action, details, created_at)
+        VALUES (NEW.id, 'INSERT', 'User created', NOW());
+        RETURN NEW;
+    ELSIF TG_OP = 'UPDATE' THEN
+        INSERT INTO logs (user_id, action, details, created_at)
+        VALUES (NEW.id, 'UPDATE', 'User updated', NOW());
+        RETURN NEW;
+    END IF;
+
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS payments_trigger ON payments;
+
+CREATE TRIGGER payments_trigger
+AFTER INSERT OR UPDATE OR DELETE ON payments
+FOR EACH ROW
+EXECUTE FUNCTION log_payments()
+`;
+
+const triggerRoles = `
+CREATE OR REPLACE FUNCTION log_roles()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'DELETE' THEN
+        INSERT INTO logs (user_id, action, details, created_at)
+        VALUES (NULL, 'DELETE', 'User deleted. user_id=' || OLD.id, NOW());
+        RETURN OLD;
+    ELSIF TG_OP = 'INSERT' THEN
+        INSERT INTO logs (user_id, action, details, created_at)
+        VALUES (NEW.id, 'INSERT', 'User created', NOW());
+        RETURN NEW;
+    ELSIF TG_OP = 'UPDATE' THEN
+        INSERT INTO logs (user_id, action, details, created_at)
+        VALUES (NEW.id, 'UPDATE', 'User updated', NOW());
+        RETURN NEW;
+    END IF;
+
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS roles_trigger ON roles;
+
+CREATE TRIGGER roles_trigger
+AFTER INSERT OR UPDATE OR DELETE ON roles
+FOR EACH ROW
+EXECUTE FUNCTION log_roles()
+`;
+
+// const triggerLogs = ``;
+
+
 async function createTrigger() {
     try {
         await con.query(triggerUsers);
         await con.query(triggerBookings);
-
+        await con.query(triggerResources);
+        await con.query(triggerPayments);
+        await con.query(triggerRoles);
 
         console.log('Триггер для логирования создан успешно.');
     } catch (error) {
@@ -81,6 +176,18 @@ async function deleteTriggers() {
         // Удаляем триггер и функцию для bookings
         await con.query('DROP TRIGGER IF EXISTS booking_trigger ON bookings;');
         await con.query('DROP FUNCTION IF EXISTS log_booking();');
+
+        // Удаляем триггер и функцию для resources
+        await con.query('DROP TRIGGER IF EXISTS resources_trigger ON resources;');
+        await con.query('DROP FUNCTION IF EXISTS log_resources();');
+
+        // Удаляем триггер и функцию для payments
+        await con.query('DROP TRIGGER IF EXISTS payments_trigger ON payments;');
+        await con.query('DROP FUNCTION IF EXISTS log_payments();');
+
+        // Удаляем триггер и функцию для roles
+        await con.query('DROP TRIGGER IF EXISTS roles_trigger ON roles;');
+        await con.query('DROP FUNCTION IF EXISTS log_roles();');
 
         console.log('Триггеры и связанные объекты удалены успешно.');
     } catch (error) {
