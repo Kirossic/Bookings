@@ -67,6 +67,16 @@ async function startTestDB() {
             );
         `);
 
+        await con.query(`
+            CREATE TABLE logs (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER REFERENCES users(id),
+                action VARCHAR(255),
+                details TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
         console.log('Тестовая база данных и таблицы созданы успешно.');
     } catch (error) {
         console.error('Ошибка при создании тестовой базы данных:', error);
