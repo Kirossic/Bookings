@@ -3,13 +3,14 @@ const router = express.Router();
 
 const con = require('../../../db/db.js');
 const verifyToken = require('../../verifyToken.js');
+const { verifyRole, roles } = require('../../../middleware/checkRole.js');
 const { validateResource } = require('../../../middleware/validators.js');
 const { ApiError } = require('../../../middleware/errorHandler.js');
 const { buildRead, buildUpdate, buildDelete } = require('../../apiConstructor.js');
 
 // server.js
 // POST /api/resources
-router.post('/', verifyToken, validateResource, async (req, res, next) => {
+router.post('/', verifyToken, validateResource, verifyRole(roles.ADMIN), async (req, res) => {
     const { name, type, description, price_per_hour, status } = req.body;
     if (!name || !type || !description || !price_per_hour || !status) {
         return res.status(400).json({ error: 'Заполните все поля' });
@@ -22,7 +23,7 @@ router.post('/', verifyToken, validateResource, async (req, res, next) => {
         res.status(201).json(result.rows[0]);
     } catch (error) {
         console.error('Ошибка при добавлении ресурса', error);
-        next(new ApiError(500, 'Ошибка сервера'));
+        throw new ApiError(500, 'Ошибка сервера');
     }
 });
 
@@ -42,7 +43,7 @@ router.get('/', async (req, res) => {
 });
 
 // GET /api/resources/:id
-router.get('/:id', verifyToken, async (req, res, next) => {
+router.get('/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
     try {
         const result = await buildRead(
@@ -55,12 +56,11 @@ router.get('/:id', verifyToken, async (req, res, next) => {
         res.json(result.rows[0]);
     } catch (error) {
         throw new ApiError(500, 'Ошибка сервера');
-        next(error);
     }
 });
 
 // PATCH /api/resources/:id
-router.patch('/:id', verifyToken, validateResource, async (req, res, next) => {
+router.patch('/:id', verifyToken, validateResource, verifyRole(roles.ADMIN), async (req, res) => {
     const { id } = req.params;
     try {
         const result = await buildUpdate(
@@ -75,14 +75,13 @@ router.patch('/:id', verifyToken, validateResource, async (req, res, next) => {
         res.json(result.rows[0]);
     } catch (error) {
         console.error('Ошибка при обновлении ресурса:', error);
-        next(error);
         throw new ApiError(500, 'Ошибка сервера');
     }
 });
 
 
 // DELETE /api/resources/:id
-router.delete('/:id', verifyToken, async (req, res, next) => {
+router.delete('/:id', verifyToken, verifyRole(roles.ADMIN), async (req, res) => {
     const { id } = req.params;
     try {
         // Проверяем роль пользователя из req.user
