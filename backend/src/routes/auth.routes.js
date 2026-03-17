@@ -1,9 +1,12 @@
+const express = require('express');
+const router = express.Router();
+
 const con = require('../../../db/db.js');
 const jwt = require('jsonwebtoken');
-const { comparePassword } = require('../hashing.js');
+const { comparePassword } = require('../../hashing.js');
 const { ApiError } = require('../../../middleware/errorHandler.js');
 
-app.post('/api/login', async (req, res) => {
+router.post('/', async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
         throw new ApiError(400, 'Заполните все поля');
@@ -29,6 +32,11 @@ app.post('/api/login', async (req, res) => {
         res.json({ token, user: { id: user.id, name: user.name, email: user.email, role_id: user.role_id } });
     } catch (error) {
         console.error('Ошибка при входе пользователя', error);
+        if (error instanceof ApiError) {
+            throw error;
+        }
         throw new ApiError(500, 'Ошибка сервера');
     }
 });
+
+module.exports = router;

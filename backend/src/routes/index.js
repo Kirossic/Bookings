@@ -8,6 +8,7 @@ const bookingRoutes = require('./booking.routes.js');
 const paymentRoutes = require('./payment.routes.js');
 const roleRoutes = require('./role.routes.js');
 const logRoutes = require('./log.routes.js');
+const authRoutes = require('./auth.routes.js');
 
 // router.use('/auth', authRoutes);
 router.use('/resources', resourceRoutes);
@@ -16,5 +17,6 @@ router.use('/payments', paymentRoutes);
 router.use('/roles', roleRoutes);
 router.use('/users', userRoutes);
 router.use('/logs', logRoutes);
+router.use('/login', authRoutes);
 
 module.exports = router;

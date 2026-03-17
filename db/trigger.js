@@ -66,15 +66,15 @@ RETURNS TRIGGER AS $$
 BEGIN
     IF TG_OP = 'DELETE' THEN
         INSERT INTO logs (user_id, action, details, created_at)
-        VALUES (NULL, 'DELETE', 'User deleted. user_id=' || OLD.id, NOW());
+        VALUES (NULL, 'DELETE', 'Resource deleted. resource_id=' || OLD.id, NOW());
         RETURN OLD;
     ELSIF TG_OP = 'INSERT' THEN
         INSERT INTO logs (user_id, action, details, created_at)
-        VALUES (NEW.id, 'INSERT', 'User created', NOW());
+        VALUES (NULL, 'INSERT', 'Resource created. resource_id=' || NEW.id, NOW());
         RETURN NEW;
     ELSIF TG_OP = 'UPDATE' THEN
         INSERT INTO logs (user_id, action, details, created_at)
-        VALUES (NEW.id, 'UPDATE', 'User updated', NOW());
+        VALUES (NULL, 'UPDATE', 'Resource updated. resource_id=' || NEW.id, NOW());
         RETURN NEW;
     END IF;
 
@@ -96,15 +96,15 @@ RETURNS TRIGGER AS $$
 BEGIN
     IF TG_OP = 'DELETE' THEN
         INSERT INTO logs (user_id, action, details, created_at)
-        VALUES (NULL, 'DELETE', 'User deleted. user_id=' || OLD.id, NOW());
+        VALUES (NULL, 'DELETE', 'Payment deleted. payment_id=' || OLD.id, NOW());
         RETURN OLD;
     ELSIF TG_OP = 'INSERT' THEN
         INSERT INTO logs (user_id, action, details, created_at)
-        VALUES (NEW.id, 'INSERT', 'User created', NOW());
+        VALUES (NULL, 'INSERT', 'Payment created. payment_id=' || NEW.id, NOW());
         RETURN NEW;
     ELSIF TG_OP = 'UPDATE' THEN
         INSERT INTO logs (user_id, action, details, created_at)
-        VALUES (NEW.id, 'UPDATE', 'User updated', NOW());
+        VALUES (NULL, 'UPDATE', 'Payment updated. payment_id=' || NEW.id, NOW());
         RETURN NEW;
     END IF;
 
@@ -126,15 +126,15 @@ RETURNS TRIGGER AS $$
 BEGIN
     IF TG_OP = 'DELETE' THEN
         INSERT INTO logs (user_id, action, details, created_at)
-        VALUES (NULL, 'DELETE', 'User deleted. user_id=' || OLD.id, NOW());
+        VALUES (NULL, 'DELETE', 'Role deleted. role_id=' || OLD.id, NOW());
         RETURN OLD;
     ELSIF TG_OP = 'INSERT' THEN
         INSERT INTO logs (user_id, action, details, created_at)
-        VALUES (NEW.id, 'INSERT', 'User created', NOW());
+        VALUES (NULL, 'INSERT', 'Role created. role_id=' || NEW.id, NOW());
         RETURN NEW;
     ELSIF TG_OP = 'UPDATE' THEN
         INSERT INTO logs (user_id, action, details, created_at)
-        VALUES (NEW.id, 'UPDATE', 'User updated', NOW());
+        VALUES (NULL, 'UPDATE', 'Role updated. role_id=' || NEW.id, NOW());
         RETURN NEW;
     END IF;
 

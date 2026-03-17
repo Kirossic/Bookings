@@ -3,13 +3,14 @@ const router = express.Router();
 
 const con = require('../../../db/db.js');
 const verifyToken = require('../../verifyToken.js');
+const { verifyRole, roles } = require('../../../middleware/checkRole.js');
 const { hashPassword } = require('../../hashing.js');
 const { validateRegister } = require('../../../middleware/validators.js');
 const { ApiError } = require('../../../middleware/errorHandler.js');
 const { buildRead, buildUpdate, buildDelete } = require('../../apiConstructor.js');
 
 // server.js
-router.post('/', validateRegister, async (req, res, next) => {
+router.post('/', validateRegister, verifyRole(roles.ADMIN), async (req, res) => {
   const { name, email, password, role_id } = req.body;
   if (!name || !email || !password) {
     return res.status(400).json({ error: 'Заполните все поля' });
@@ -29,35 +30,35 @@ router.post('/', validateRegister, async (req, res, next) => {
     res.status(201).json(result.rows[0]);
   } catch (error) {
     console.error('Ошибка при добавлении пользователя', error);
-    next(new ApiError(500, 'Ошибка сервера'));
+    throw new ApiError(500, 'Ошибка сервера');
   }
 });
 
 // api.js
 // GET /api/users
-router.get('/', async (req, res, next) => {
+router.get('/', async (req, res) => {
   try {
     if (!con._connected) throw new ApiError(500, 'Database connection not established');
     const result = await con.query('SELECT id, name, email, role_id, created_at FROM users');
     res.json(result.rows);
   } catch (error) {
-    next(error);
+    throw new ApiError(500, 'Ошибка сервера');
   }
 });
 
 // GET /api/users/:id
-router.get('/:id', verifyToken, async (req, res, next) => {
+router.get('/:id', verifyToken, verifyRole(roles.ADMIN), async (req, res) => {
   try {
     const result = await buildRead('users', req.params.id);
     if (result.rowCount === 0) throw new ApiError(404, 'Пользователь не найден');
     res.json(result.rows[0]);
   } catch (error) {
-    next(error);
+    throw new ApiError(500, 'Ошибка сервера');
   }
 });
 
 // PATCH /api/users/:id
-router.patch('/:id', verifyToken, validateRegister, async (req, res, next) => {
+router.patch('/:id', verifyToken, validateRegister, verifyRole(roles.ADMIN), async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -70,18 +71,14 @@ router.patch('/:id', verifyToken, validateRegister, async (req, res, next) => {
 
     res.json(result.rows[0]);
   } catch (error) {
-    next(error);
+    console.error('Ошибка при обновлении пользователя', error);
+    throw new ApiError(500, 'Ошибка сервера');
   }
 });
 
 // DELETE /api/users/:id
-router.delete('/:id', verifyToken, async (req, res, next) => {
+router.delete('/:id', verifyToken, verifyRole(roles.ADMIN), async (req, res) => {
   try {
-    const user = await con.query('SELECT role_id FROM users WHERE id = $1', [req.user.id]);
-    if (user.rowCount === 0 || user.rows[0].role_id !== 3) {
-      return res.status(403).json({ error: 'Нет прав для удаления этого пользователя' });
-    }
-
     const result = await buildDelete('users', req.params.id);
     if (result.rowCount === 0) {
       return res.status(404).json({ error: 'Пользователь не найден' });
@@ -90,7 +87,7 @@ router.delete('/:id', verifyToken, async (req, res, next) => {
     res.json({ message: 'Пользователь удалён', user: result.rows[0] });
   } catch (error) {
     console.error('Ошибка при удалении пользователя', error);
-    next(new ApiError(500, 'Ошибка сервера'));
+    throw new ApiError(500, 'Ошибка сервера');
   }
 });
 
