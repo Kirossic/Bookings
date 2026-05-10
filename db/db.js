@@ -1,4 +1,9 @@
+const dns = require('dns');
 const {Pool} = require('pg');
+
+if (typeof dns.setDefaultResultOrder === 'function') {
+    dns.setDefaultResultOrder('ipv4first');
+}
 
 const con = new Pool({
     host: process.env.DB_HOST || 'localhost',
