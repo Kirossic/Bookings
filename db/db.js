@@ -5,7 +5,9 @@ const con = new Pool({
     user: process.env.DB_USER || "postgres",
     port: parseInt(process.env.DB_PORT || '5432', 10),
     password: process.env.DB_PASSWORD || "12345678",
-    database: process.env.DB_NAME || "db_bronare"
+    database: process.env.DB_NAME || "db_bronare",
+    family: 4,
+    ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : undefined
 });
 
 con.connect().then(() => {
