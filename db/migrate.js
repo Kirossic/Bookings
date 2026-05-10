@@ -107,8 +107,8 @@ async function migrate() {
         console.log('Миграции успешно применены!');
 
         // Заполнить тестовыми данными (роли и пользователи)
-        // await startTestDB();
-        // await startTestUnit();
+        await startTestDB();
+        await startTestUnit();
 
         await con.end();
         process.exit(0);
