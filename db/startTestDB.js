@@ -1,7 +1,6 @@
-const con = require('./db.js');
 const { hashPassword } = require('../backend/hashing.js');
 
-async function startTestDB() {
+async function startTestDB(con) {
     try {
         // Очищаем базу данных
         await con.query(`DROP TABLE IF EXISTS payments CASCADE;`);
@@ -83,7 +82,7 @@ async function startTestDB() {
     }
 }
 
-async function startTestUnit() {
+async function startTestUnit(con) {
     try {
         await con.query(`
             INSERT INTO roles (name) VALUES

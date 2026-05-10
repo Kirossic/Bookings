@@ -1,8 +1,35 @@
-const con = require('./db.js');
+const dns = require('dns').promises;
+const { Pool } = require('pg');
 const {createTrigger, deleteTriggers} = require('./trigger.js');
 const { startTestDB, startTestUnit } = require('./startTestDB.js');
 
+async function buildPool() {
+    const host = process.env.DB_HOST || 'localhost';
+    let resolvedHost = host;
+
+    if (!/^\d{1,3}(\.\d{1,3}){3}$/.test(host)) {
+        try {
+            const ipv4Records = await dns.resolve4(host);
+            if (ipv4Records.length > 0) {
+                resolvedHost = ipv4Records[0];
+            }
+        } catch (error) {
+            console.warn('IPv4 resolve failed, using original host:', error.message);
+        }
+    }
+
+    return new Pool({
+        host: resolvedHost,
+        user: process.env.DB_USER || 'postgres',
+        port: parseInt(process.env.DB_PORT || '5432', 10),
+        password: process.env.DB_PASSWORD || '12345678',
+        database: process.env.DB_NAME || 'db_bronare',
+        ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : undefined
+    });
+}
+
 async function migrate() {
+    const con = await buildPool();
     try {
         // roles
         await con.query(`
@@ -75,7 +102,7 @@ async function migrate() {
         `);
 
         // await deleteTriggers();
-        await createTrigger();
+        await createTrigger(con);
 
         console.log('Миграции успешно применены!');
 
@@ -83,9 +110,11 @@ async function migrate() {
         // await startTestDB();
         // await startTestUnit();
 
+        await con.end();
         process.exit(0);
     } catch (err) {
         console.error('Ошибка миграции:', err);
+        await con.end().catch(() => {});
         process.exit(1);
     }
 }

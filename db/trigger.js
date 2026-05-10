@@ -1,5 +1,3 @@
-const con = require('./db.js');
-
 const triggerUsers = `
 CREATE OR REPLACE FUNCTION log_user()
 RETURNS TRIGGER AS $$
@@ -153,7 +151,7 @@ EXECUTE FUNCTION log_roles()
 // const triggerLogs = ``;
 
 
-async function createTrigger() {
+async function createTrigger(con) {
     try {
         await con.query(triggerUsers);
         await con.query(triggerBookings);
@@ -167,7 +165,7 @@ async function createTrigger() {
     }
 }
 
-async function deleteTriggers() {
+async function deleteTriggers(con) {
     try {
         // Удаляем триггер и функцию для users
         await con.query('DROP TRIGGER IF EXISTS user_trigger ON users;');
