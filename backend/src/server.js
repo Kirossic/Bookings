@@ -4,10 +4,6 @@ const app = require('./api.js');
 
 // Обход ограничений терминала
 const migrate = require('../../db/migrate.js');
-migrate().catch(err => {
-    console.error('Ошибка при миграции базы данных', err);
-    process.exit(1);
-});
 
 const publicDir = path.resolve(__dirname, '../../public');
 
