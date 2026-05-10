@@ -1,25 +1,25 @@
 const express = require('express');
+const path = require('path');
 const app = require('./api.js');
 
+const publicDir = path.resolve(__dirname, '../../public');
+
 app.get('/', (req, res) => {
-    res.send('Привет, Express!');
+    res.sendFile(path.join(publicDir, 'index.html'));
 });
 
-app.listen(3000, () => {
-    console.log('Сервер запущен на порту 3000');
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Сервер запущен на порту ${PORT}`);
     console.log('|_______________________|_________________________________________________|');
-    console.log('|Стартовая страница:    |http://localhost:3000/index                      |');
+    console.log(`|Стартовая страница:    |http://localhost:${PORT}/index                      |`);
     console.log('|-----------------------|-------------------------------------------------|');
-    console.log('|Главная страница:      |http://localhost:3000/Buking/home/index.html     |');
+    console.log(`|Главная страница:      |http://localhost:${PORT}/Buking/home/index.html     |`);
     console.log('|-----------------------|-------------------------------------------------|');
-    console.log('|sign_in:               |http://localhost:3000/Buking/sign_in/index.html  |');
+    console.log(`|sign_in:               |http://localhost:${PORT}/Buking/sign_in/index.html  |`);
     console.log('|-----------------------|-------------------------------------------------|');
-    console.log('|Админ понель:          |http://localhost:3000/admin/admin.html           |');
+    console.log(`|Админ понель:          |http://localhost:${PORT}/admin/admin.html           |`);
     console.log('|_______________________|_________________________________________________|');
 });
 
-app.get('/index', (req, res) => {
-    res.sendFile(__dirname + '/public/index.html');
-});
-
-app.use(express.static('public'));
+app.use(express.static(publicDir));
