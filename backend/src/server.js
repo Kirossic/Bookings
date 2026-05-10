@@ -2,9 +2,6 @@ const express = require('express');
 const path = require('path');
 const app = require('./api.js');
 
-// Обход ограничений терминала
-const migrate = require('../../db/migrate.js');
-
 const publicDir = path.resolve(__dirname, '../../public');
 
 app.get('/', (req, res) => {
