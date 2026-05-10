@@ -106,9 +106,14 @@ async function migrate() {
 
         console.log('Миграции успешно применены!');
 
-        // Заполнить тестовыми данными (роли и пользователи)
-        await startTestDB();
-        await startTestUnit();
+        // Тестовые данные запускаем только явно через env-флаги.
+        // В прод-деплое это обычно должно быть выключено.
+        if (process.env.SEED_RESET === 'true') {
+            await startTestDB(con);
+        }
+        if (process.env.SEED_DB === 'true') {
+            await startTestUnit(con);
+        }
 
         await con.end();
         process.exit(0);
