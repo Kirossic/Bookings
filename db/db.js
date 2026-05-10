@@ -8,6 +8,15 @@ const con = new Pool({
     database: process.env.DB_NAME || "db_bronare"
 });
 
+// Если удалённая БД (Supabase/Heroku/etc.) требует SSL, укажи
+// DB_SSL=true в переменных окружения (Render/CI). В локальной
+// разработке можно не устанавливать.
+if (process.env.DB_SSL === 'true') {
+    // node-postgres принимает опцию `ssl` в конфиге пула
+    con.options = con.options || {};
+    con.options.ssl = { rejectUnauthorized: false };
+}
+
 con.connect().then(() => {
     console.log("Connected to the database");
 }).catch(err => {
