@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (auth.isAuthenticated()) {
             if (auth.hasRole(3)) {
                 menuItems.push('<li><a href="/admin/admin.html">CRUD</a></li>');
+                menuItems.push('<li><a href="../home/booking.html">Мас бронь</a></li>');
             }
 
             if (auth.hasRole(2)) {
@@ -24,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
             menuItems.push('<li><a href="../sign_up/index.html">Sign Up</a></li>');
         }
 
+        menuItems.push('<li id="logout-btn"><a>Logout</a></li>');
         menuItems.push('<li id="close">Close</li>');
         optionsMenu.innerHTML = menuItems.join('');
         closeItem = document.getElementById('close');
