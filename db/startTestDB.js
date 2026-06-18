@@ -111,7 +111,7 @@ async function startTestUnit(con) {
 
         await con.query(`
             INSERT INTO resources (name, type, description, price_per_hour, status) VALUES
-            ('Отнль звезда', 'hotel', 'hotel', 50.00, 'Свободен'),
+            ('Отель звезда', 'hotel', 'hotel', 50.00, 'Свободен'),
             ('Test', 'Test', 'Test description', 20.00, 'Свободен'),
             ('Laptop L15', 'equipment', 'Powerful laptop for presentations', 30.00, 'Свободен'),
             ('Projector X200', 'equipment', 'High-resolution projector', 25.00, 'Свободен'),
@@ -122,7 +122,7 @@ async function startTestUnit(con) {
             ON CONFLICT DO NOTHING;
         `);
 
-        console.log('Тестовые таблици созданы успешно.');
+        console.log('Тестовые таблицы созданы успешно.');
         
     } catch (error) {
         console.error('Ошибка при создании тестовых данных:', error);

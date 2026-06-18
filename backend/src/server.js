@@ -109,7 +109,7 @@ initializeDatabase().then(() => {
         console.log('|-----------------------|-------------------------------------------------|');
         console.log(`|sign_in:               |http://localhost:${PORT}/Buking/sign_in/index.html  |`);
         console.log('|-----------------------|-------------------------------------------------|');
-        console.log(`|Админ понель:          |http://localhost:${PORT}/admin/admin.html           |`);
+        console.log(`|Админ панель:          |http://localhost:${PORT}/admin/admin.html           |`);
         console.log('|_______________________|_________________________________________________|');
     });
 }).catch(error => {

@@ -9,16 +9,16 @@ async function loadUsers() {
 }
 loadUsers();
 
-let elemrnts = {
+let elements = {
     name: document.getElementById('name'),
     email: document.getElementById('email'),
     password: document.getElementById('password'),
     button: document.getElementById('button')
 };
-elemrnts.button.addEventListener('click', async () => {
-    const name = elemrnts.name.value;
-    const email = elemrnts.email.value;
-    const password = elemrnts.password.value;
+elements.button.addEventListener('click', async () => {
+    const name = elements.name.value;
+    const email = elements.email.value;
+    const password = elements.password.value;
 
     if (!name || !email || !password) {
         alert('Заполните все поля');
@@ -55,4 +55,4 @@ elemrnts.button.addEventListener('click', async () => {
 });
 
 console.log(usersLocal);
-console.log(elemrnts);
+console.log(elements);

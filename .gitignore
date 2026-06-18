@@ -57,6 +57,9 @@ build/
 *.swo
 tempFile.md
 
+# Review files
+REVIEW_*
+
 # Doc
 DOC/
 .github/

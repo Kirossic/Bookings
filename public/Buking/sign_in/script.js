@@ -1,11 +1,11 @@
-let elemrnts = {
+let elements = {
     name: document.getElementById('name'),
     email: document.getElementById('email'),
     password: document.getElementById('password'),
     button: document.getElementById('button')
 }
-elemrnts.button.addEventListener('click', async () => {
-    if (!elemrnts.name.value || !elemrnts.email.value || !elemrnts.password.value) {
+elements.button.addEventListener('click', async () => {
+    if (!elements.name.value || !elements.email.value || !elements.password.value) {
         alert('Заполните все поля');
         return;        
     }
@@ -13,7 +13,7 @@ elemrnts.button.addEventListener('click', async () => {
         const res = await fetch('/api/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: elemrnts.email.value, password: elemrnts.password.value })
+            body: JSON.stringify({ email: elements.email.value, password: elements.password.value })
         });
         const data = await res.json();
         if (!res.ok) {
