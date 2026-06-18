@@ -4,7 +4,7 @@ const {createTrigger, deleteTriggers} = require('./trigger.js');
 const { startTestDB, startTestUnit } = require('./startTestDB.js');
 
 async function buildPool() {
-    const host = process.env.DB_HOST || 'localhost';
+    const host = process.env.DB_HOST;
     let resolvedHost = host;
 
     if (!/^\d{1,3}(\.\d{1,3}){3}$/.test(host)) {

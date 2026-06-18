@@ -1,8 +1,34 @@
-// Общий скрипт навигации для отображения пользователя и кнопки выхода
+// Общий скрипт навигации для отображения пользователя, выхода и меню по ролям
 
 document.addEventListener('DOMContentLoaded', () => {
     const user = auth.getUser();
-    
+    const optionsMenu = document.getElementById('options');
+    const profilePic = document.querySelector('.profile-pic');
+    let closeItem = document.getElementById('close');
+
+    if (optionsMenu) {
+        const menuItems = [
+            '<li><a href="../home/index.html">Home</a></li>'
+        ];
+
+        if (auth.isAuthenticated()) {
+            if (auth.hasRole(3)) {
+                menuItems.push('<li><a href="/admin/admin.html">CRUD</a></li>');
+            }
+
+            if (auth.hasRole(2)) {
+                menuItems.push('<li><a href="/manager/manager.html">Manager</a></li>');
+            }
+        } else {
+            menuItems.push('<li><a href="../sign_in/index.html">Sign In</a></li>');
+            menuItems.push('<li><a href="../sign_up/index.html">Sign Up</a></li>');
+        }
+
+        menuItems.push('<li id="close">Close</li>');
+        optionsMenu.innerHTML = menuItems.join('');
+        closeItem = document.getElementById('close');
+    }
+
     // Обновление приветствия, если есть элемент для отображения имени пользователя
     const userGreeting = document.getElementById('user-greeting');
     if (userGreeting && user) {
@@ -22,21 +48,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Обработчик для кнопки входа (если пользователь не авторизован)
     const loginBtn = document.getElementById('login-btn');
-    if (loginBtn) {
-        if (auth.isAuthenticated()) {
-            loginBtn.style.display = 'none';
-        }
+    if (loginBtn && auth.isAuthenticated()) {
+        loginBtn.style.display = 'none';
     }
 
-    // Обработчик для кнопки админки (только для админов)
-    const adminBtn = document.getElementById('admin-btn');
-    if (adminBtn) {
-        if (!auth.hasRole(1)) {
-            adminBtn.style.display = 'none';
-        } else {
-            adminBtn.addEventListener('click', () => {
-                window.location.href = '/admin/admin.html';
-            });
+    const toggleMenu = (show) => {
+        if (optionsMenu) {
+            optionsMenu.style.display = show ? 'inline' : 'none';
         }
+        if (profilePic) {
+            profilePic.style.display = show ? 'none' : 'inline';
+        }
+    };
+
+    if (profilePic && optionsMenu && closeItem) {
+        profilePic.addEventListener('click', () => toggleMenu(true));
+        closeItem.addEventListener('click', () => toggleMenu(false));
     }
 });
