@@ -77,15 +77,18 @@ router.get('/:id', verifyToken, async (req, res) => {
 // PATCH /api/bookings/:id
 router.patch('/:id', verifyToken, validateBooking, async (req, res) => {
     const { id } = req.params;
+    const { resource_id, start_time, end_time, status } = req.body;
+
     try {
         const conflict = await con.query(
             `SELECT id FROM bookings
              WHERE resource_id = $1
-               AND status != 'cancelled'
-               AND $2 < end_time
-               AND $3 > start_time
+                AND status != 'cancelled'
+                AND $2 < end_time
+                AND $3 > start_time
+                AND id != $4
              LIMIT 1`,
-            [resource_id, start_time, end_time]
+            [resource_id, start_time, end_time, id]
         );
 
         if (conflict.rowCount > 0) {
@@ -95,8 +98,7 @@ router.patch('/:id', verifyToken, validateBooking, async (req, res) => {
         const resourceUpdate = await buildUpdate(
             'resources',
             req.body.resource_id,
-            { status: req.body.status },
-            ['status']
+            { status: req.body.status }
         );
         if (resourceUpdate.rowCount === 0) {
             throw new ApiError(400, 'Не указаны поля для обновления');
@@ -105,8 +107,7 @@ router.patch('/:id', verifyToken, validateBooking, async (req, res) => {
         const result = await buildUpdate(
             'bookings',
             id,
-            req.body,
-            ['user_id', 'resource_id', 'start_time', 'end_time', 'status']
+            req.body
         );
         if (result.rowCount === 0) {
             throw new ApiError(404, 'Бронирование не найдено');

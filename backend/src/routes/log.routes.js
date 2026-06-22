@@ -46,8 +46,7 @@ router.patch('/:id', verifyToken, verifyRole(roles.ADMIN), async (req, res) => {
         const result = await buildUpdate(
             'logs',
             id,
-            req.body,
-            ['user_id', 'resource_id', 'start_time', 'end_time', 'status']
+            req.body
         );
         if (result.rowCount === 0) {
             throw new ApiError(404, 'Лог не найден');

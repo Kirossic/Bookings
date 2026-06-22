@@ -46,8 +46,7 @@ router.patch('/:id', verifyToken, verifyRole(roles.ADMIN), async (req, res) => {
         const result = await buildUpdate(
             'roles',
             id,
-            req.body,
-            ['name']
+            req.body
         );
         if (result.rowCount === 0) {
             throw new ApiError(404, 'Роль не найдена');

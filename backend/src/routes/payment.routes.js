@@ -46,8 +46,7 @@ router.patch('/:id', verifyToken, verifyRole(roles.ADMIN), async (req, res) => {
         const result = await buildUpdate(
             'payments',
             id,
-            req.body,
-            ['booking_id', 'amount', 'status', 'payment_method', 'created_at']
+            req.body
         );
         if (result.rowCount === 0) {
             throw new ApiError(404, 'Платеж не найден');

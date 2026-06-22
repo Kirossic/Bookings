@@ -1,7 +1,7 @@
 const { ApiError } = require('./errorHandler.js');
 const roles = {
     ADMIN: 3,
-    MANADGER: 2,
+    MANAGER: 2,
     USER: 1
 };
 

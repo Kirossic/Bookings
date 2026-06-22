@@ -66,8 +66,7 @@ router.patch('/:id', verifyToken, validateResource, verifyRole(roles.ADMIN), asy
         const result = await buildUpdate(
             'resources',
             id,
-            req.body,
-            ['name', 'description', 'type', 'status', 'price_per_hour']
+            req.body
         );
         if (result.rowCount === 0) {
             throw new ApiError(404, 'Ресурс не найден');

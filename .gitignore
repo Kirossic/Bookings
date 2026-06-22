@@ -57,8 +57,9 @@ build/
 *.swo
 tempFile.md
 
-# Review files
+# Review and roadmap files
 REVIEW_*
+ROADMAP_*
 
 # Doc
 DOC/

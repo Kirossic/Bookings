@@ -66,7 +66,11 @@ router.patch('/:id', verifyToken, validateRegister, verifyRole(roles.ADMIN), asy
       throw new ApiError(403, 'Нельзя изменить собственную роль на неадминистратора');
     }
 
-    const result = await buildUpdate('users', id, req.body, ['name', 'email', 'password', 'role_id']);
+    const result = await buildUpdate(
+      'users', 
+      id, 
+      req.body
+    );
     if (!result || result.rowCount === 0) throw new ApiError(404, 'Пользователь не найден');
 
     res.json(result.rows[0]);
