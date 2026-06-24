@@ -150,47 +150,46 @@ EXECUTE FUNCTION log_roles()
 
 // const triggerLogs = ``;
 
-
 async function createTrigger(con) {
-    try {
-        await con.query(triggerUsers);
-        await con.query(triggerBookings);
-        await con.query(triggerResources);
-        await con.query(triggerPayments);
-        await con.query(triggerRoles);
+  try {
+    await con.query(triggerUsers);
+    await con.query(triggerBookings);
+    await con.query(triggerResources);
+    await con.query(triggerPayments);
+    await con.query(triggerRoles);
 
-        console.log('Триггер для логирования создан успешно.');
-    } catch (error) {
-        console.error('Ошибка при создании триггера:', error);
-    }
+    console.log('Триггер для логирования создан успешно.');
+  } catch (error) {
+    console.error('Ошибка при создании триггера:', error);
+  }
 }
 
 async function deleteTriggers(con) {
-    try {
-        // Удаляем триггер и функцию для users
-        await con.query('DROP TRIGGER IF EXISTS user_trigger ON users;');
-        await con.query('DROP FUNCTION IF EXISTS log_user();');
+  try {
+    // Удаляем триггер и функцию для users
+    await con.query('DROP TRIGGER IF EXISTS user_trigger ON users;');
+    await con.query('DROP FUNCTION IF EXISTS log_user();');
 
-        // Удаляем триггер и функцию для bookings
-        await con.query('DROP TRIGGER IF EXISTS booking_trigger ON bookings;');
-        await con.query('DROP FUNCTION IF EXISTS log_booking();');
+    // Удаляем триггер и функцию для bookings
+    await con.query('DROP TRIGGER IF EXISTS booking_trigger ON bookings;');
+    await con.query('DROP FUNCTION IF EXISTS log_booking();');
 
-        // Удаляем триггер и функцию для resources
-        await con.query('DROP TRIGGER IF EXISTS resources_trigger ON resources;');
-        await con.query('DROP FUNCTION IF EXISTS log_resources();');
+    // Удаляем триггер и функцию для resources
+    await con.query('DROP TRIGGER IF EXISTS resources_trigger ON resources;');
+    await con.query('DROP FUNCTION IF EXISTS log_resources();');
 
-        // Удаляем триггер и функцию для payments
-        await con.query('DROP TRIGGER IF EXISTS payments_trigger ON payments;');
-        await con.query('DROP FUNCTION IF EXISTS log_payments();');
+    // Удаляем триггер и функцию для payments
+    await con.query('DROP TRIGGER IF EXISTS payments_trigger ON payments;');
+    await con.query('DROP FUNCTION IF EXISTS log_payments();');
 
-        // Удаляем триггер и функцию для roles
-        await con.query('DROP TRIGGER IF EXISTS roles_trigger ON roles;');
-        await con.query('DROP FUNCTION IF EXISTS log_roles();');
+    // Удаляем триггер и функцию для roles
+    await con.query('DROP TRIGGER IF EXISTS roles_trigger ON roles;');
+    await con.query('DROP FUNCTION IF EXISTS log_roles();');
 
-        console.log('Триггеры и связанные объекты удалены успешно.');
-    } catch (error) {
-        console.error('Ошибка при удалении триггеров:', error);
-    }
+    console.log('Триггеры и связанные объекты удалены успешно.');
+  } catch (error) {
+    console.error('Ошибка при удалении триггеров:', error);
+  }
 }
 
 module.exports = { createTrigger, deleteTriggers };

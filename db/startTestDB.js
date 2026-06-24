@@ -1,25 +1,25 @@
 const { hashPassword } = require('../backend/hashing.js');
 
 async function startTestDB(con) {
-    try {
-        // Очищаем базу данных
-        await con.query(`DROP TABLE IF EXISTS payments CASCADE;`);
-        await con.query(`DROP TABLE IF EXISTS bookings CASCADE;`);
-        await con.query(`DROP TABLE IF EXISTS logs CASCADE;`);
-        await con.query(`DROP TABLE IF EXISTS resources CASCADE;`);
-        await con.query(`DROP TABLE IF EXISTS users CASCADE;`);
-        await con.query(`DROP TABLE IF EXISTS roles CASCADE;`);
-        await con.query(`DROP TABLE IF EXISTS booking_deletion_logs CASCADE;`);
+  try {
+    // Очищаем базу данных
+    await con.query(`DROP TABLE IF EXISTS payments CASCADE;`);
+    await con.query(`DROP TABLE IF EXISTS bookings CASCADE;`);
+    await con.query(`DROP TABLE IF EXISTS logs CASCADE;`);
+    await con.query(`DROP TABLE IF EXISTS resources CASCADE;`);
+    await con.query(`DROP TABLE IF EXISTS users CASCADE;`);
+    await con.query(`DROP TABLE IF EXISTS roles CASCADE;`);
+    await con.query(`DROP TABLE IF EXISTS booking_deletion_logs CASCADE;`);
 
-        // Пересоздаем таблицы
-        await con.query(`
+    // Пересоздаем таблицы
+    await con.query(`
             CREATE TABLE roles (
                 id SERIAL PRIMARY KEY,
                 name VARCHAR(50) UNIQUE NOT NULL
             );
         `);
 
-        await con.query(`
+    await con.query(`
             CREATE TABLE users (
                 id SERIAL PRIMARY KEY,
                 name VARCHAR(100) NOT NULL,
@@ -30,7 +30,7 @@ async function startTestDB(con) {
             );
         `);
 
-        await con.query(`
+    await con.query(`
             CREATE TABLE resources (
                 id SERIAL PRIMARY KEY,
                 name VARCHAR(100) NOT NULL,
@@ -42,7 +42,7 @@ async function startTestDB(con) {
             );
         `);
 
-        await con.query(`
+    await con.query(`
             CREATE TABLE bookings (
                 id SERIAL PRIMARY KEY,
                 user_id INTEGER REFERENCES users(id),
@@ -54,7 +54,7 @@ async function startTestDB(con) {
             );
         `);
 
-        await con.query(`
+    await con.query(`
             CREATE TABLE payments (
                 id SERIAL PRIMARY KEY,
                 booking_id INTEGER REFERENCES bookings(id),
@@ -66,7 +66,7 @@ async function startTestDB(con) {
             );
         `);
 
-        await con.query(`
+    await con.query(`
             CREATE TABLE logs (
                 id SERIAL PRIMARY KEY,
                 user_id INTEGER REFERENCES users(id),
@@ -76,15 +76,15 @@ async function startTestDB(con) {
             );
         `);
 
-        console.log('Тестовая база данных и таблицы созданы успешно.');
-    } catch (error) {
-        console.error('Ошибка при создании тестовой базы данных:', error);
-    }
+    console.log('Тестовая база данных и таблицы созданы успешно.');
+  } catch (error) {
+    console.error('Ошибка при создании тестовой базы данных:', error);
+  }
 }
 
 async function startTestUnit(con) {
-    try {
-        await con.query(`
+  try {
+    await con.query(`
             INSERT INTO roles (name) VALUES
             ('user'),
             ('manager'),
@@ -92,14 +92,15 @@ async function startTestUnit(con) {
             ON CONFLICT (name) DO NOTHING;
         `);
 
-        // Хешировать пароли перед вставкой
-        const adminHash = await hashPassword('admin');
-        const managerHash = await hashPassword('manager');
-        const user1Hash = await hashPassword('user1');
-        const user2Hash = await hashPassword('user2');
-        const user3Hash = await hashPassword('user3');
+    // Хешировать пароли перед вставкой
+    const adminHash = await hashPassword('admin');
+    const managerHash = await hashPassword('manager');
+    const user1Hash = await hashPassword('user1');
+    const user2Hash = await hashPassword('user2');
+    const user3Hash = await hashPassword('user3');
 
-        await con.query(`
+    await con.query(
+      `
             INSERT INTO users (name, email, password_hash, role_id) VALUES
             ('admin', 'admin', $1, (SELECT id FROM roles WHERE name = 'admin')),
             ('manager', 'manager', $2, (SELECT id FROM roles WHERE name = 'manager')),
@@ -107,9 +108,11 @@ async function startTestUnit(con) {
             ('user2', 'user2', $4, (SELECT id FROM roles WHERE name = 'user')),
             ('user3', 'user3', $5, (SELECT id FROM roles WHERE name = 'user'))
             ON CONFLICT (email) DO NOTHING;
-        `, [adminHash, managerHash, user1Hash, user2Hash, user3Hash]);
+        `,
+      [adminHash, managerHash, user1Hash, user2Hash, user3Hash]
+    );
 
-        await con.query(`
+    await con.query(`
             INSERT INTO resources (name, type, description, price_per_hour, status) VALUES
             ('Отель звезда', 'hotel', 'hotel', 50.00, 'Свободен'),
             ('Test', 'Test', 'Test description', 20.00, 'Свободен'),
@@ -122,11 +125,10 @@ async function startTestUnit(con) {
             ON CONFLICT DO NOTHING;
         `);
 
-        console.log('Тестовые таблицы созданы успешно.');
-        
-    } catch (error) {
-        console.error('Ошибка при создании тестовых данных:', error);
-    }
+    console.log('Тестовые таблицы созданы успешно.');
+  } catch (error) {
+    console.error('Ошибка при создании тестовых данных:', error);
+  }
 }
 
 module.exports = { startTestDB, startTestUnit };

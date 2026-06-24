@@ -8,23 +8,23 @@ const { startTestUnit } = require('../../db/startTestDB.js');
 const publicDir = path.resolve(__dirname, '../../public');
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(publicDir, 'index.html'));
+  res.sendFile(path.join(publicDir, 'index.html'));
 });
 
 // Инициализация БД при старте сервера
 async function initializeDatabase() {
-    try {
-        console.log('Инициализация БД...');
+  try {
+    console.log('Инициализация БД...');
 
-        // Создание таблиц IF NOT EXISTS
-        await con.query(`
+    // Создание таблиц IF NOT EXISTS
+    await con.query(`
             CREATE TABLE IF NOT EXISTS roles (
                 id SERIAL PRIMARY KEY,
                 name VARCHAR(50) UNIQUE NOT NULL
             );
         `);
 
-        await con.query(`
+    await con.query(`
             CREATE TABLE IF NOT EXISTS users (
                 id SERIAL PRIMARY KEY,
                 name VARCHAR(100) NOT NULL,
@@ -35,7 +35,7 @@ async function initializeDatabase() {
             );
         `);
 
-        await con.query(`
+    await con.query(`
             CREATE TABLE IF NOT EXISTS resources (
                 id SERIAL PRIMARY KEY,
                 name VARCHAR(100) NOT NULL,
@@ -47,7 +47,7 @@ async function initializeDatabase() {
             );
         `);
 
-        await con.query(`
+    await con.query(`
             CREATE TABLE IF NOT EXISTS bookings (
                 id SERIAL PRIMARY KEY,
                 user_id INTEGER REFERENCES users(id),
@@ -59,7 +59,7 @@ async function initializeDatabase() {
             );
         `);
 
-        await con.query(`
+    await con.query(`
             CREATE TABLE IF NOT EXISTS payments (
                 id SERIAL PRIMARY KEY,
                 booking_id INTEGER REFERENCES bookings(id),
@@ -71,7 +71,7 @@ async function initializeDatabase() {
             );
         `);
 
-        await con.query(`
+    await con.query(`
             CREATE TABLE IF NOT EXISTS logs (
                 id SERIAL PRIMARY KEY,
                 user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
@@ -81,40 +81,42 @@ async function initializeDatabase() {
             );
         `);
 
-        // Создание триггеров
-        await createTrigger(con);
-        console.log('✓ Таблицы и триггеры созданы/проверены');
+    // Создание триггеров
+    await createTrigger(con);
+    console.log('✓ Таблицы и триггеры созданы/проверены');
 
-        // Создание тестовых данных (admin, manager, user1, user2, user3)
-        await startTestUnit(con);
-        console.log('✓ Тестовые пользователи и ресурсы готовы');
+    // Создание тестовых данных (admin, manager, user1, user2, user3)
+    await startTestUnit(con);
+    console.log('✓ Тестовые пользователи и ресурсы готовы');
 
-        console.log('✓ Инициализация БД успешна!');
-    } catch (error) {
-        console.error('⚠️ Ошибка инициализации БД:', error.message);
-        // Не прерываем запуск сервера — может быть просто БД недоступна
-    }
+    console.log('✓ Инициализация БД успешна!');
+  } catch (error) {
+    console.error('⚠️ Ошибка инициализации БД:', error.message);
+    // Не прерываем запуск сервера — может быть просто БД недоступна
+  }
 }
 
 const PORT = process.env.PORT || 3000;
 
 // Инициализируем БД, затем запускаем сервер
-initializeDatabase().then(() => {
+initializeDatabase()
+  .then(() => {
     app.listen(PORT, () => {
-        console.log(`Сервер запущен на порту ${PORT}`);
-        console.log('|_______________________|_________________________________________________|');
-        console.log(`|Стартовая страница:    |http://localhost:${PORT}/index                      |`);
-        console.log('|-----------------------|-------------------------------------------------|');
-        console.log(`|Главная страница:      |http://localhost:${PORT}/Buking/home/index.html     |`);
-        console.log('|-----------------------|-------------------------------------------------|');
-        console.log(`|sign_in:               |http://localhost:${PORT}/Buking/sign_in/index.html  |`);
-        console.log('|-----------------------|-------------------------------------------------|');
-        console.log(`|Админ панель:          |http://localhost:${PORT}/admin/admin.html           |`);
-        console.log('|_______________________|_________________________________________________|');
+      console.log(`Сервер запущен на порту ${PORT}`);
+      console.log('|_______________________|_________________________________________________|');
+      console.log(`|Стартовая страница:    |http://localhost:${PORT}/index                      |`);
+      console.log('|-----------------------|-------------------------------------------------|');
+      console.log(`|Главная страница:      |http://localhost:${PORT}/Buking/home/index.html     |`);
+      console.log('|-----------------------|-------------------------------------------------|');
+      console.log(`|sign_in:               |http://localhost:${PORT}/Buking/sign_in/index.html  |`);
+      console.log('|-----------------------|-------------------------------------------------|');
+      console.log(`|Админ панель:          |http://localhost:${PORT}/admin/admin.html           |`);
+      console.log('|_______________________|_________________________________________________|');
     });
-}).catch(error => {
+  })
+  .catch((error) => {
     console.error('Критическая ошибка при запуске:', error);
     process.exit(1);
-});
+  });
 
 app.use(express.static(publicDir));

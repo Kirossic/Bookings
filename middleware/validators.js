@@ -57,7 +57,7 @@ const validators = {
     const start = new Date(startTime);
     const end = new Date(endTime);
     return start < end;
-  }
+  },
 };
 
 // Middleware для проверки регистрации/обновления пользователя
@@ -76,7 +76,8 @@ const validateRegister = (req, res, next) => {
 
   // PATCH запрос: проверяем только переданные поля
   if (isPatch) {
-    const hasAnyField = name !== undefined || email !== undefined || password !== undefined || role_id !== undefined;
+    const hasAnyField =
+      name !== undefined || email !== undefined || password !== undefined || role_id !== undefined;
     if (!hasAnyField) {
       return res.status(400).json({ error: 'Не указаны поля для обновления' });
     }
@@ -151,5 +152,5 @@ module.exports = {
   validators,
   validateRegister,
   validateResource,
-  validateBooking
+  validateBooking,
 };

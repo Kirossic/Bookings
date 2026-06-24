@@ -36,7 +36,7 @@ router.post('/', validateRegister, async (req, res) => {
 
 // api.js
 // GET /api/users
-router.get('/', verifyRole(roles.ADMIN), async (req, res) => {
+router.get('/', verifyToken, verifyRole(roles.ADMIN), async (req, res) => {
   try {
     if (!con._connected) throw new ApiError(500, 'Database connection not established');
     const result = await con.query('SELECT id, name, email, role_id, created_at FROM users');
@@ -66,11 +66,7 @@ router.patch('/:id', verifyToken, validateRegister, verifyRole(roles.ADMIN), asy
       throw new ApiError(403, 'Нельзя изменить собственную роль на неадминистратора');
     }
 
-    const result = await buildUpdate(
-      'users', 
-      id, 
-      req.body
-    );
+    const result = await buildUpdate('users', id, req.body);
     if (!result || result.rowCount === 0) throw new ApiError(404, 'Пользователь не найден');
 
     res.json(result.rows[0]);

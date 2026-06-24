@@ -1,8 +1,8 @@
 class ApiError extends Error {
-    constructor(status, message) {
-        super(message);
-        this.status = status;
-    }
+  constructor(status, message) {
+    super(message);
+    this.status = status;
+  }
 }
 
 // Middleware для обработки ошибок
@@ -14,11 +14,11 @@ const errorHandler = (error, req, res, next) => {
   res.status(status).json({
     error: message,
     status: status,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 };
 
 module.exports = {
   ApiError,
-  errorHandler
+  errorHandler,
 };
