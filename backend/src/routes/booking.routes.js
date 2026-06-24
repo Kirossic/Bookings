@@ -49,6 +49,11 @@ router.get('/', verifyToken, async (req, res) => {
         throw new ApiError(500, 'Database connection not established');
     }
     try {
+        if (req.user.role_id !== roles.ADMIN && req.user.role_id !== roles.MANAGER) {
+            const result = await con.query('SELECT * FROM bookings WHERE user_id = $1', [req.user.id]);
+            return res.json(result.rows);
+        }
+
         const result = await con.query('SELECT * FROM bookings');
         res.json(result.rows);
     } catch (error) {
@@ -65,9 +70,15 @@ router.get('/:id', verifyToken, async (req, res) => {
             'bookings',
             id
         );
+
         if (result.rowCount === 0) {
             throw new ApiError(404, 'Бронирование не найдено');
-        }
+        };
+
+        if (req.user.role_id !== roles.ADMIN && req.user.role_id !== roles.MANAGER && result.rows[0].user_id !== req.user.id) {
+            throw new ApiError(403, 'Доступ запрещен');
+        };
+
         res.json(result.rows[0]);
     } catch (error) {
         throw new ApiError(500, 'Ошибка сервера');
@@ -80,6 +91,16 @@ router.patch('/:id', verifyToken, validateBooking, async (req, res) => {
     const { resource_id, start_time, end_time, status } = req.body;
 
     try {
+        if (req.user.role_id !== roles.ADMIN && req.user.role_id !== roles.MANAGER) {
+            const booking = await con.query('SELECT user_id FROM bookings WHERE id = $1', [id]);
+            if (booking.rowCount === 0) {
+                throw new ApiError(404, 'Бронирование не найдено');
+            }
+            if (booking.rows[0].user_id !== req.user.id) {
+                throw new ApiError(403, 'Доступ запрещен');
+            }
+        };
+
         const conflict = await con.query(
             `SELECT id FROM bookings
              WHERE resource_id = $1

@@ -10,7 +10,7 @@ const { ApiError } = require('../../../middleware/errorHandler.js');
 const { buildRead, buildUpdate, buildDelete } = require('../../apiConstructor.js');
 
 // server.js
-router.post('/', validateRegister, verifyRole(roles.ADMIN), async (req, res) => {
+router.post('/', validateRegister, async (req, res) => {
   const { name, email, password, role_id } = req.body;
   if (!name || !email || !password) {
     return res.status(400).json({ error: 'Заполните все поля' });
@@ -36,7 +36,7 @@ router.post('/', validateRegister, verifyRole(roles.ADMIN), async (req, res) => 
 
 // api.js
 // GET /api/users
-router.get('/', async (req, res) => {
+router.get('/', verifyRole(roles.ADMIN), async (req, res) => {
   try {
     if (!con._connected) throw new ApiError(500, 'Database connection not established');
     const result = await con.query('SELECT id, name, email, role_id, created_at FROM users');

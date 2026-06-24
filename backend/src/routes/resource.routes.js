@@ -43,7 +43,7 @@ router.get('/', async (req, res) => {
 });
 
 // GET /api/resources/:id
-router.get('/:id', verifyToken, async (req, res) => {
+router.get('/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const result = await buildRead(
@@ -85,7 +85,7 @@ router.delete('/:id', verifyToken, verifyRole(roles.ADMIN), async (req, res) => 
     try {
         // Проверяем роль пользователя из req.user
         const user = await con.query('SELECT role_id FROM users WHERE id = $1', [req.user.id]);
-        if (user.rowCount === 0 || user.rows[0].role_id !== 3) {
+        if (user.rowCount === 0 || user.rows[0].role_id !== roles.ADMIN) {
             return res.status(403).json({ error: 'Нет прав для удаления этого ресурса' });
         }
 
