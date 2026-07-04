@@ -1,5 +1,6 @@
 const dns = require('dns').promises;
 const { Pool } = require('pg');
+// eslint-disable-next-line no-unused-vars
 const { createTrigger, deleteTriggers } = require('./trigger.js');
 const { startTestDB, startTestUnit } = require('./startTestDB.js');
 
@@ -22,7 +23,7 @@ async function buildPool() {
     host: resolvedHost,
     user: process.env.DB_USER || 'postgres',
     port: parseInt(process.env.DB_PORT || '5432', 10),
-    password: process.env.DB_PASSWORD || '12345678',
+    password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME || 'db_bronare',
     ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : undefined,
   });
