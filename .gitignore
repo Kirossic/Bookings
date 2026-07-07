@@ -70,3 +70,8 @@ DOC/FINAL_REPORT.md
 DOC/PROJECT_CHECKLIST.md
 DOC/PROJECT_STRUCTURE.md
 DOC/UPDATES_SUMMARY.md
+
+# Docker
+/backend/Dockerfile
+/backend/.dockerignore
+/.dockerignore
