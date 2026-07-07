@@ -109,11 +109,16 @@ async function migrate() {
 
     // Тестовые данные запускаем только явно через env-флаги.
     // В прод-деплое это обычно должно быть выключено.
-    if (process.env.SEED_RESET === 'true') {
+    const { rows } = await con.query('SELECT COUNT(*) FROM users');
+    const isDbEmpty = parseInt(rows[0].count) === 0;
+    if (process.env.SEED_DB === 'true' && isDbEmpty) {
       await startTestDB(con);
+      await createTrigger(con);
+      console.log('✓ Тестовая БД сброшена и восстановлена');
     }
-    if (process.env.SEED_DB === 'true') {
+    if (process.env.SEED_UNITS === 'true' && isDbEmpty) {
       await startTestUnit(con);
+      console.log('✓ Тестовые пользователи и ресурсы созданы');
     }
 
     await con.end();

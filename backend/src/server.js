@@ -3,7 +3,7 @@ const path = require('path');
 const app = require('./api.js');
 const con = require('../../db/db.js');
 const { createTrigger } = require('../../db/trigger.js');
-const { startTestUnit } = require('../../db/startTestDB.js');
+const { startTestUnit, startTestDB } = require('../../db/startTestDB.js');
 
 const publicDir = path.resolve(__dirname, '../../public');
 
@@ -86,8 +86,17 @@ async function initializeDatabase() {
     console.log('✓ Таблицы и триггеры созданы/проверены');
 
     // Создание тестовых данных (admin, manager, user1, user2, user3)
-    await startTestUnit(con);
-    console.log('✓ Тестовые пользователи и ресурсы готовы');
+    const { rows } = await con.query('SELECT COUNT(*) FROM users');
+    const isDbEmpty = parseInt(rows[0].count) === 0;
+    if (process.env.SEED_DB === 'true' && isDbEmpty) {
+      await startTestDB(con);
+      await createTrigger(con);
+      console.log('✓ Тестовая БД сброшена и восстановлена');
+    }
+    if (process.env.SEED_UNITS === 'true' && isDbEmpty) {
+      await startTestUnit(con);
+      console.log('✓ Тестовые пользователи и ресурсы созданы');
+    }
 
     console.log('✓ Инициализация БД успешна!');
   } catch (error) {
