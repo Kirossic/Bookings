@@ -37,7 +37,7 @@ router.post('/', verifyToken, validateBooking, async (req, res) => {
     );
 
     res.status(201).json(result.rows[0]);
-  } catch (error) {
+  } catch {
     throw new ApiError(500, 'Ошибка сервера');
   }
 });
@@ -81,7 +81,7 @@ router.get('/:id', verifyToken, async (req, res) => {
     }
 
     res.json(result.rows[0]);
-  } catch (error) {
+  } catch {
     throw new ApiError(500, 'Ошибка сервера');
   }
 });
@@ -89,7 +89,7 @@ router.get('/:id', verifyToken, async (req, res) => {
 // PATCH /api/bookings/:id
 router.patch('/:id', verifyToken, validateBooking, async (req, res) => {
   const { id } = req.params;
-  const { resource_id, start_time, end_time, status } = req.body;
+  const { resource_id, start_time, end_time } = req.body;
 
   try {
     if (req.user.role_id !== roles.ADMIN && req.user.role_id !== roles.MANAGER) {
@@ -129,7 +129,7 @@ router.patch('/:id', verifyToken, validateBooking, async (req, res) => {
       throw new ApiError(404, 'Бронирование не найдено');
     }
     res.json(result.rows[0]);
-  } catch (error) {
+  } catch {
     throw new ApiError(500, 'Ошибка сервера');
   }
 });

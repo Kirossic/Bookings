@@ -31,7 +31,7 @@ router.get('/:id', verifyToken, verifyRole(roles.ADMIN), async (req, res) => {
       throw new ApiError(404, 'Платеж не найден');
     }
     res.json(result.rows[0]);
-  } catch (error) {
+  } catch {
     throw new ApiError(500, 'Ошибка сервера');
   }
 });
@@ -45,7 +45,21 @@ router.patch('/:id', verifyToken, verifyRole(roles.ADMIN), async (req, res) => {
       throw new ApiError(404, 'Платеж не найден');
     }
     res.json(result.rows[0]);
-  } catch (error) {
+  } catch {
+    throw new ApiError(500, 'Ошибка сервера');
+  }
+});
+
+// DELETE /api/payments/:id
+router.delete('/:id', verifyToken, verifyRole(roles.ADMIN), async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await buildDelete('payments', id);
+    if (result.rowCount === 0) {
+      throw new ApiError(404, 'Платеж не найден');
+    }
+    res.json({ message: 'Платеж успешно удален' });
+  } catch {
     throw new ApiError(500, 'Ошибка сервера');
   }
 });

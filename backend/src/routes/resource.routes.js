@@ -51,7 +51,7 @@ router.get('/:id', async (req, res) => {
       throw new ApiError(404, 'Ресурс не найден');
     }
     res.json(result.rows[0]);
-  } catch (error) {
+  } catch {
     throw new ApiError(500, 'Ошибка сервера');
   }
 });
@@ -88,7 +88,7 @@ router.delete('/:id', verifyToken, verifyRole(roles.ADMIN), async (req, res) => 
     res.json({ message: 'Ресурс удалён', resource: result.rows[0] });
   } catch (error) {
     console.error('Ошибка при удалении ресурса', error);
-    next(new ApiError(500, 'Ошибка сервера'));
+    throw new ApiError(500, 'Ошибка сервера');
   }
 });
 

@@ -41,7 +41,7 @@ router.get('/', verifyToken, verifyRole(roles.ADMIN), async (req, res) => {
     if (!con._connected) throw new ApiError(500, 'Database connection not established');
     const result = await con.query('SELECT id, name, email, role_id, created_at FROM users');
     res.json(result.rows);
-  } catch (error) {
+  } catch {
     throw new ApiError(500, 'Ошибка сервера');
   }
 });
@@ -52,7 +52,7 @@ router.get('/:id', verifyToken, verifyRole(roles.ADMIN), async (req, res) => {
     const result = await buildRead('users', req.params.id);
     if (result.rowCount === 0) throw new ApiError(404, 'Пользователь не найден');
     res.json(result.rows[0]);
-  } catch (error) {
+  } catch {
     throw new ApiError(500, 'Ошибка сервера');
   }
 });

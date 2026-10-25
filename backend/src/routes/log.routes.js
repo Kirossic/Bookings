@@ -31,7 +31,7 @@ router.get('/:id', verifyToken, verifyRole(roles.ADMIN), async (req, res) => {
       throw new ApiError(404, 'Лог не найден');
     }
     res.json(result.rows[0]);
-  } catch (error) {
+  } catch {
     throw new ApiError(500, 'Ошибка сервера');
   }
 });
@@ -45,7 +45,7 @@ router.patch('/:id', verifyToken, verifyRole(roles.ADMIN), async (req, res) => {
       throw new ApiError(404, 'Лог не найден');
     }
     res.json(result.rows[0]);
-  } catch (error) {
+  } catch {
     throw new ApiError(500, 'Ошибка сервера');
   }
 });
