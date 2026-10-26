@@ -105,8 +105,6 @@ async function initializeDatabase(con) {
         `);
   } catch (error) {
     console.error('⚠️ Ошибка инициализации БД:', error.message);
-  } finally {
-    await con.end();
   }
 }
 
@@ -138,6 +136,8 @@ async function migrate() {
     await con.end();
   } catch (err) {
     console.error('Ошибка миграции:', err);
+    await con.end().catch(() => {});
+  } finally {
     await con.end().catch(() => {});
   }
 }
