@@ -6,7 +6,7 @@ class ApiError extends Error {
 }
 
 // Middleware для обработки ошибок
-const errorHandler = (error, res) => {
+const errorHandler = (error, _req, res, _next) => {
   console.error(error);
 
   const status = error.status || 500;

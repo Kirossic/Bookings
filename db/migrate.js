@@ -29,9 +29,11 @@ async function buildPool() {
   });
 }
 
-async function migrate() {
-  const con = await buildPool();
+async function initializeDatabase(con) {
   try {
+    console.log('Инициализация БД...');
+
+    // Создание таблиц IF NOT EXISTS
     // roles
     await con.query(`
             CREATE TABLE IF NOT EXISTS roles (
@@ -101,13 +103,25 @@ async function migrate() {
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         `);
+  } catch (error) {
+    console.error('⚠️ Ошибка инициализации БД:', error.message);
+  } finally {
+    await con.end();
+  }
+}
 
-    // await deleteTriggers();
+async function migrate() {
+  const con = await buildPool();
+  try {
+    await initializeDatabase(con);
+
+    // Создание триггеров
     await createTrigger(con);
-
+    console.log('✓ Таблицы и триггеры созданы/проверены');
     console.log('Миграции успешно применены!');
 
     // Тестовые данные запускаем только явно через env-флаги.
+    // Создание тестовых данных (admin, manager, user1, user2, user3)
     // В прод-деплое это обычно должно быть выключено.
     const { rows } = await con.query('SELECT COUNT(*) FROM users');
     const isDbEmpty = parseInt(rows[0].count) === 0;
@@ -122,12 +136,22 @@ async function migrate() {
     }
 
     await con.end();
-    process.exit(0);
   } catch (err) {
     console.error('Ошибка миграции:', err);
     await con.end().catch(() => {});
-    process.exit(1);
   }
 }
 
-migrate();
+if (require.main === module) {
+  migrate()
+    .then(() => {
+      console.log('Миграции завершены');
+      process.exit(0);
+    })
+    .catch((err) => {
+      console.error('Ошибка миграции:', err);
+      process.exit(1);
+    });
+}
+
+module.exports = { migrate };
