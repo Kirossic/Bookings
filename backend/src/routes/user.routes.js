@@ -11,7 +11,7 @@ const { buildRead, buildUpdate, buildDelete } = require('../../apiConstructor.js
 
 // server.js
 router.post('/', validateRegister, async (req, res) => {
-  const { name, email, password, role_id } = req.body;
+  const { name, email, password } = req.body;
   if (!name || !email || !password) {
     return res.status(400).json({ error: 'Заполните все поля' });
   }
@@ -24,7 +24,7 @@ router.post('/', validateRegister, async (req, res) => {
     const hashed = await hashPassword(password);
     const result = await con.query(
       'INSERT INTO users (name, email, password_hash, role_id, created_at) VALUES ($1, $2, $3, $4, NOW()) RETURNING id, name, email, role_id',
-      [name, email, hashed, role_id || 1]
+      [name, email, hashed, 1]
     );
 
     res.status(201).json(result.rows[0]);

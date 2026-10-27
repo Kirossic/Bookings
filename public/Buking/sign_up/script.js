@@ -41,6 +41,7 @@ elements.button.addEventListener('click', async () => {
             usersLocal.push(newUser);
             console.log('Пользователь добавлен:', newUser);
             alert('Регистрация успешна!');
+            window.location.href = "../home/index.html";
         } else if (res.status === 409) {
             alert('Пользователь с таким email уже существует!');
         } else {
@@ -51,7 +52,6 @@ elements.button.addEventListener('click', async () => {
         console.error('Ошибка сети:', error);
         alert('Ошибка сети');
     }
-    window.location.href = "../home/index.html";
 });
 
 console.log(usersLocal);

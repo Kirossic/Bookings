@@ -5,7 +5,7 @@ let elements = {
     button: document.getElementById('button')
 }
 elements.button.addEventListener('click', async () => {
-    if (!elements.name.value || !elements.email.value || !elements.password.value) {
+    if (!elements.email.value || !elements.password.value) {
         alert('Заполните все поля');
         return;        
     }
